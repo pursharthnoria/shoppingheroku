@@ -45,7 +45,14 @@ def login():
             session["accountNumber"] = details["accountNumber"]
             session["ifsc"] = details["ifsc"]
             session["password"] = details["password"] 
-            return redirect("/buyerDashboard")
+            session["verified"] = details['verified']
+            if session['verified'] == "yes":
+                return redirect("/buyerDashboard")
+            else:
+                otp = db.generateOTP()
+                db.sendOTPemail(email,otp)
+                session['otp'] = otp
+                redirect("/pleaseVerify")
         elif role == "manager":
             session["userid"] = details["userid"]
             session["firstName"] = details["firstName"]

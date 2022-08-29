@@ -270,7 +270,8 @@ class database:
             "bankname":buyers[0][11], 
             "accountNumber":buyers[0][12], 
             "ifsc":buyers[0][13], 
-            "password":buyers[0][14]
+            "password":buyers[0][14],
+            "verified":buyers[0][15]
             }
         elif len(admins)>0:
             role = "admin"
