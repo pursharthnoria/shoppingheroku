@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+    <title>Preskool - Login</title>
+
+    <link rel="shortcut icon" href="{{ url_for('static', filename='assets/img/favicon.png') }}">
+
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,500;0,600;0,700;1,400&display=swap">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/plugins/bootstrap/css/bootstrap.min.css') }}">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/plugins/fontawesome/css/fontawesome.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/plugins/fontawesome/css/all.min.css') }}">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/style.css') }}">
+</head>
+
+<body>
+
+    <div class="main-wrapper login-body">
+        <div class="login-wrapper">
+            <div class="container">
+                <div class="loginbox" style="max-width: 1300px;">
+                
+                    <form action="/register" method="post">
+                        <div class="row mx-auto">
+                            <div class="col-12">
+                                <h5 class="form-title"><span>Personal Details:</span></h5>
+                            </div>
+                            <div class="col-12 col-sm-6">
+                                <div class="form-group">
+                                    <label></label>
+                                    <input placeholder="Enter your first name *" type="text"
+                                        name="first_name" required class="form-control">
+                                </div>
+                            </div>
+                            <div class="col-12 col-sm-6">
+                                <div class="form-group">
+                                    <label></label>
+                                    <input placeholder="Enter your Last name *" type="text"
+                                        name="last_name" required class="form-control">
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-sm-6">
+                                <div class="form-group">
+
+                                    <input type="text"
+                                        placeholder="Default Profile Name (Amazon / Flipkart)*" required
+                                        class="form-control" name="profile">
+                                </div>
+                            </div>
+                            <div class="col-12 col-sm-6">
+                                <div class="form-group">
+
+                                    <input placeholder="Enter a super secure password *" type="password"
+                                        required class="form-control" name="password">
+                                </div>
+                            </div>
+
+                            <div class="col-12">
+                                <h5 class="form-title"><span>Contact Details:</span></h5>
+                            </div>
+                            <div class="col-12 col-sm-6">
+                                <div class="form-group">
+
+                                    <input placeholder="Enter your email ID " type="email"
+                                        class="form-control" name="email">
+                                </div>
+                            </div>
+                            <div class="col-12 col-sm-6">
+                                <div class="form-group">
+
+                                    <input type="text" placeholder="Enter your Telegram ID"
+                                        class="form-control" name="telegram">
+                                </div>
+                            </div>
+                            <div class="col-12 col-sm-6">
+                                <div class="form-group">
+
+                                    <input type="text" placeholder="Enter your WhatsApp number *" required
+                                        class="form-control" name="whatsapp">
+                                </div>
+                            </div>
+                            <div class="col-12 col-sm-6">
+                                <div class="form-group">
+
+                                    <input type="text" placeholder="Enter your alternate number"
+                                        class="form-control" name="alternate">
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <h5 class="form-title"><span>Bank Details:</span></h5>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group">
+
+                                    <input type="text" name="paytm" placeholder="Enter your Paytm Number *"
+                                        required class="form-control">
+                                </div>
+                            </div>
+                            <div class="col-12 col-sm-6">
+                                <div class="form-group">
+
+                                    <input type="text" name="gpay" placeholder="Enter your GPay number"
+                                        class="form-control">
+                                </div>
+                            </div>
+                            <div class="col-12 col-sm-6">
+                                <div class="form-group">
+
+                                    <input type="text" name="upi" placeholder="Enter your UPI ID"
+                                        class="form-control">
+                                </div>
+                            </div>
+                            <div class="col-12 col-sm-6">
+                                <div class="form-group">
+
+                                    <input type="text" name="account"
+                                        placeholder="Enter your account number" class="form-control">
+                                </div>
+                            </div>
+                            <div class="col-12 col-sm-6">
+                                <div class="form-group">
+
+                                    <input type="text" name="ifsc" placeholder="Enter your IFSC code"
+                                        class="form-control">
+                                </div>
+                            </div>
+                          
+
+                            <div class="col-12">
+                                <button type="submit" class="btn btn-primary">Sign Up</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="{{ url_for('static', filename='assets/js/jquery-3.6.0.min.js') }}"></script>
+
+    <script src="{{ url_for('static', filename='assets/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+
+    <script src="{{ url_for('static', filename='assets/js/script.js') }}"></script>
+</body>
+
+</html>

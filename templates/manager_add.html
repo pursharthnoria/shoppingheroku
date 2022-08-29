@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+    <title> Dashboard</title>
+
+    <link rel="shortcut icon" href="{{ url_for('static', filename='assets/img/favicon.png') }}">
+
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,500;0,600;0,700;1,400&display=swap">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/plugins/bootstrap/css/bootstrap.min.css') }}">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/plugins/fontawesome/css/fontawesome.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/plugins/fontawesome/css/all.min.css') }}">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/style.css') }}">
+</head>
+
+<body>
+
+    <div class="main-wrapper">
+        <div class="header">
+
+            <div class="header-left">
+                <a href="index.html" class="logo">
+                    <h4>Admin</h4>
+                </a>
+                <a href="index.html" class="logo logo-small">
+                    <h4>Admin</h4>
+                </a>
+            </div>
+
+            <a href="javascript:void(0);" id="toggle_btn">
+                <i class="fas fa-align-left"></i>
+            </a>
+
+
+
+            <a class="mobile_btn" id="mobile_btn">
+                <i class="fas fa-bars"></i>
+            </a>
+
+
+            <ul class="nav user-menu">
+
+
+
+
+              
+
+            </ul>
+
+        </div>
+
+
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-inner slimscroll">
+                <div id="sidebar-menu" class="sidebar-menu">
+                    <ul>
+                        <li class="menu-title">
+                            <span>Main Menu</span>
+                        </li>
+                        <li class=" active">
+                            <a href="/adminDashboard"><i class="fas fa-clipboard"></i> <span> Dashboard</span>
+                        </li>
+                        <li class=" ">
+                            <a href="all_user.html"><i class="fas fa-clipboard"></i> <span> User</span>
+                        </li>
+
+                        <li class="submenu">
+                            <a href="#"><i class="fas fa-chalkboard-teacher"></i> <span> Admin</span> <span
+                                    class="menu-arrow"></span></a>
+                            <ul>
+                                <li><a href="/viewAdmins">Admin List</a></li>
+
+                                <li><a href="/addAdmin">Admin Add</a></li>
+
+                            </ul>
+                        </li>
+                        <li class="submenu">
+                            <a href="#"><i class="fas fa-building"></i> <span> Managers</span> <span
+                                    class="menu-arrow"></span></a>
+                            <ul>
+                                <li><a href="/viewManagers">Managers List</a></li>
+                                <li><a href="/addManager">Manager Add</a></li>
+
+                            </ul>
+                        </li>
+                        <li class="submenu">
+                            <a href="#"><i class="fas fa-book-reader"></i> <span> Sellers</span> <span
+                                    class="menu-arrow"></span></a>
+                            <ul>
+                                <li><a href="/viewSellers">Sellers List</a></li>
+                                <li><a href="/addSeller">Seller Add</a></li>
+
+                            </ul>
+                        </li>
+                        <li class="submenu">
+                            <a href="#"><i class="fas fa-clipboard"></i> <span> Brands</span> <span
+                                    class="menu-arrow"></span></a>
+                            <ul>
+                                <li><a href="/viewBrands">Brands List</a></li>
+                                <li><a href="/addBrand">Brand Add</a></li>
+
+                            </ul>
+                        </li>
+
+                        <li class="submenu">
+                            <a href="#"><i class="fas fa-file-invoice-dollar"></i> <span> Products</span> <span
+                                    class="menu-arrow"></span></a>
+                            <ul>
+                                <li><a href="/viewProducts">Products list</a></li>
+                                <li><a href="/addProduct">Product Add</a></li>
+
+                            </ul>
+                        </li>
+                        <li class="submenu">
+                            <a href="#"><i class="fas fa-clipboard"></i> <span> Campaigns</span> <span
+                                    class="menu-arrow"></span></a>
+                            <ul>
+                                <li><a href="/viewCampaigns">Camaigns List</a></li>
+                                <li><a href="/addCampaign">Campaign Add</a></li>
+                                   
+
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="/logout"><i class="fas fa-holly-berry"></i> <span>Logout</span></a>
+                        </li>
+
+
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+
+
+        <div class="page-wrapper">
+            <div class="content container-fluid">
+
+                <div class="page-header">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <h3 class="page-title">Welcome Admin!</h3>
+                            <ul class="breadcrumb">
+                                <li class="breadcrumb-item active">Add new manager</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <form  action="/addManagerButton" method="post" enctype="multipart/form-data">
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <h5 class="form-title"><span>Personal Details:</span></h5>
+                                        </div>
+                                        <div class="col-12 col-sm-6">
+                                            <div class="form-group">
+                                                <label></label>
+                                                <input placeholder="Enter your first name *" type="text"
+                                                    name="FirstName" required class="form-control">
+                                            </div>
+                                        </div>
+                                        <div class="col-12 col-sm-6">
+                                            <div class="form-group">
+                                                <label></label>
+                                                <input placeholder="Enter your Last name *" type="text"
+                                                    name="LastName" required class="form-control">
+                                            </div>
+                                        </div>
+
+                                        <div class="col-12 col-sm-6">
+                                            <div class="form-group">
+
+                                                <input type="text"
+                                                    placeholder="Default Profile Name (Amazon / Flipkart)*" required
+                                                    class="form-control" name="profile">
+                                            </div>
+                                        </div>
+                                        <div class="col-12 col-sm-6">
+                                            <div class="form-group">
+
+                                                <input placeholder="Enter a super secure password *" type="password"
+                                                    required class="form-control" name="password">
+                                            </div>
+                                        </div>
+
+                                        <div class="col-12">
+                                            <h5 class="form-title"><span>Contact Details:</span></h5>
+                                        </div>
+                                        <div class="col-12 col-sm-6">
+                                            <div class="form-group">
+
+                                                <input placeholder="Enter your email ID " type="email"
+                                                    class="form-control" name="email">
+                                            </div>
+                                        </div>
+                                        <div class="col-12 col-sm-6">
+                                            <div class="form-group">
+
+                                                <input type="text" placeholder="Enter your Telegram ID"
+                                                    class="form-control" name="telegram">
+                                            </div>
+                                        </div>
+                                        <div class="col-12 col-sm-6">
+                                            <div class="form-group">
+
+                                                <input type="text" placeholder="Enter your WhatsApp number *" required
+                                                    class="form-control" name="whatsapp">
+                                            </div>
+                                        </div>
+                                        <div class="col-12 col-sm-6">
+                                            <div class="form-group">
+
+                                                <input type="text" placeholder="Enter your alternate number"
+                                                    class="form-control" name="alternate">
+                                            </div>
+                                        </div>
+                                        <div class="col-12">
+                                            <h5 class="form-title"><span>Bank Details:</span></h5>
+                                        </div>
+                                        <div class="col-12">
+                                            <div class="form-group">
+
+                                                <input type="text" name="paytm" placeholder="Enter your Paytm Number *"
+                                                    required class="form-control">
+                                            </div>
+                                        </div>
+                                        <div class="col-12 col-sm-6">
+                                            <div class="form-group">
+
+                                                <input type="text" name="gpay" placeholder="Enter your GPay number"
+                                                    class="form-control">
+                                            </div>
+                                        </div>
+                                        <div class="col-12 col-sm-6">
+                                            <div class="form-group">
+
+                                                <input type="text" name="upi" placeholder="Enter your UPI ID"
+                                                    class="form-control">
+                                            </div>
+                                        </div>
+                                        <div class="col-12 col-sm-6">
+                                            <div class="form-group">
+
+                                                <input type="text" name="account"
+                                                    placeholder="Enter your account number" class="form-control">
+                                            </div>
+                                        </div>
+                                        <div class="col-12 col-sm-6">
+                                            <div class="form-group">
+
+                                                <input type="text" name="ifsc" placeholder="Enter your IFSC code"
+                                                    class="form-control">
+                                            </div>
+                                        </div>
+                                        <div class="col-12">
+                                            <h5 class="form-title"><span>Document Details:<span></h5>
+                                        </div>
+                                        <div class="col-12">
+                                            <div class="form-group">
+                                                <p> Please upload your adhar card (pdf)</p>
+                                                <input type="file" name="adhar"
+                                                    placeholder="Please upload your adhar card (pdf)" required
+                                                    class="form-control">
+                                            </div>
+                                        </div>
+                                        <div class="col-12 ">
+                                            <div class="form-group">
+                                                <p>
+                                                    Please upload your pan card (pdf)</p>
+                                                <input type="file" name="pan"
+                                                    placeholder="Please upload your pan card (pdf)" required
+                                                    class="form-control">
+                                            </div>
+                                        </div>
+
+                                        <div class="col-12">
+                                            <button type="submit" class="btn btn-primary">Submit</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+    <script src="{{ url_for('static', filename='assets/js/jquery-3.6.0.min.js') }}"></script>
+
+    <script src="{{ url_for('static', filename='assets/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+
+    <script src="{{ url_for('static', filename='assets/plugins/slimscroll/jquery.slimscroll.min.js') }}"></script>
+
+    <script src="{{ url_for('static', filename='assets/plugins/apexchart/apexcharts.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='assets/plugins/apexchart/chart-data.js') }}"></script>
+
+    <script src="{{ url_for('static', filename='assets/js/script.js') }}"></script>
+</body>
+
+</html>
