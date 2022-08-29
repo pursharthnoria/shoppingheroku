@@ -1,0 +1,214 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+        <title> Dashboard</title>
+    
+        <link rel="shortcut icon" href="{{ url_for('static', filename='assets/img/favicon.png') }}">
+    
+        <link rel="stylesheet"
+            href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,500;0,600;0,700;1,400&display=swap">
+    
+        <link rel="stylesheet" href="{{ url_for('static', filename='assets/plugins/bootstrap/css/bootstrap.min.css') }}">
+    
+        <link rel="stylesheet" href="{{ url_for('static', filename='assets/plugins/fontawesome/css/fontawesome.min.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='assets/plugins/fontawesome/css/all.min.css') }}">
+    
+        <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/style.css') }}">
+    </head>
+
+<body>
+
+    <div class="main-wrapper">
+     
+        <div class="header">
+
+            <div class="header-left">
+                <a href="user_dashboard.html" class="logo">
+                    <h4>User</h4>
+                </a>
+                <a href="user_dashboard.html" class="logo logo-small">
+                    <h4>User</h4>
+                </a>
+            </div>
+
+            <a href="javascript:void(0);" id="toggle_btn">
+                <i class="fas fa-align-left"></i>
+            </a>
+
+
+
+            <a class="mobile_btn" id="mobile_btn">
+                <i class="fas fa-bars"></i>
+            </a>
+
+
+            <ul class="nav user-menu">
+
+
+
+
+              
+
+            </ul>
+
+        </div>
+
+
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-inner slimscroll">
+                <div id="sidebar-menu" class="sidebar-menu">
+                    <ul>
+                        <li class="menu-title">
+                            <span>Main Menu</span>
+                        </li>
+                        <li class=" active">
+                            <a href="/buyerDashboard"><i class="fas fa-clipboard"></i> <span> Dashboard</span></a>
+                        </li>
+                        <li class=" ">
+                            <a href="/activeCampaigns"><i class="fas fa-clipboard"></i> <span> Campaigns</span></a>
+                        </li>
+                        <li class=" ">
+                            <a href="receive_form.html"><i class="fas fa-clipboard"></i> <span> Receive Form</span></a>
+                        </li>
+                        <li class=" ">
+                            <a href="/"><i class="fas fa-clipboard"></i> <span> Logout</span> </a>
+                        </li>
+                       
+
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+
+
+        <div class="page-wrapper">
+            <div class="content container-fluid">
+
+                <div class="page-header">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <h3 class="page-title">Welcome {{ name }}</h3>
+                            <ul class="breadcrumb">
+                                <li class="breadcrumb-item active">Dashboard</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <form>
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <h5 class="form-title"><span> Details:</span></h5>
+                                        </div>
+                                        <div class="col-12 col-sm-6">
+                                            <div class="form-group">
+                                                <label style="color:black ;">Affiliate Name <span style="color: red ;">*</span></label>
+                                                <input  type="text"
+                                                    name="affiliate_name" required class="form-control">
+                                            </div>
+                                        </div>
+                                        <div class="col-12 col-sm-6">
+                                            <div class="form-group">
+                                                <label style="color:black ;">Brand Name <span style="color: red ;">*</span></label>
+                                               <select name="brand_name" class="form-control" id="">
+                                                <option disabled="" selected="">-selected-</option>
+                                                <option value="">Name</option>
+                                               </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-12 col-sm-6">
+                                            <div class="form-group">
+                                                <label style="color:black ;">Campaign Manager <span style="color: red ;">*</span></label>
+                                               <select name="brand_name" class="form-control" id="">
+                                                <option disabled="" selected="">-selected-</option>
+                                                <option value="">Name</option>
+                                               </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-12 col-sm-6">
+                                            <div class="form-group">
+                                                <label style="color:black ;">Order Date <span style="color: red ;">*</span></label>
+
+                                                <input name="order_date"  type="date"
+                                                    required class="form-control">
+                                            </div>
+                                        </div>
+                                        <div class="col-12 col-sm-6">
+                                            <div class="form-group">
+                                                <label style="color:black ;">Order ID As Text <span style="color: red ;">*</span></label>
+
+                                                <input name="order_id"  type="text"
+                                                    required class="form-control">
+                                            </div>
+                                        </div>
+                                        <div class="col-12 col-sm-6">
+                                            <div class="form-group">
+                                                <label style="color:black ;">Order Screenshot <span style="color: red ;">*</span></label>
+
+                                                <input name="order_screentshot"  type="file"
+                                                    required class="form-control">
+                                            </div>
+                                        </div>
+                                        <div class="col-12 col-sm-6">
+                                            <div class="form-group">
+                                                <label style="color:black ;">Order Amount <span style="color: red ;">*</span></label>
+
+                                                <input name="order_amount"  type="text"
+                                                    required class="form-control">
+                                            </div>
+                                        </div>
+                                        <div class="col-12 col-sm-6">
+                                            <div class="form-group">
+                                                <label style="color:black ;">Refund Amount <span style="color: red ;">*</span></label>
+
+                                                <input name="refund_amouunt"  type="text"
+                                                    required class="form-control">
+                                            </div>
+                                        </div>
+
+
+                                      
+                                      
+
+                                        <div class="col-12">
+                                            <button type="submit" class="btn btn-primary">Save Detail</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+    <script src="{{ url_for('static', filename='assets/js/jquery-3.6.0.min.js') }}"></script>
+
+    <script src="{{ url_for('static', filename='assets/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+
+    <script src="{{ url_for('static', filename='assets/plugins/slimscroll/jquery.slimscroll.min.js') }}"></script>
+
+    <script src="{{ url_for('static', filename='assets/plugins/apexchart/apexcharts.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='assets/plugins/apexchart/chart-data.js') }}"></script>
+
+    <script src="{{ url_for('static', filename='assets/js/script.js') }}"></script>
+</body>
+
+</html>

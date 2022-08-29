@@ -52,7 +52,7 @@ def login():
                 otp = db.generateOTP()
                 db.sendOTPemail(email,otp)
                 session['otp'] = otp
-                redirect("/pleaseVerify")
+                return redirect("/pleaseVerify")
         elif role == "manager":
             session["userid"] = details["userid"]
             session["firstName"] = details["firstName"]
@@ -81,6 +81,12 @@ def buyerDashboard():
 def activeCampaigns():
     if session.get("userid"):
         return render_template("activeCampaigns.html",name = session['firstName'])
+
+
+@app.route('/campaignForm')
+def campaignForm():
+    if session.get("userid"):
+        return render_template("form.html",name = session['firstName'])
 
 
 @app.route('/adminDashboard')
