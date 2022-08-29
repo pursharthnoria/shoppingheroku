@@ -1,5 +1,7 @@
 import random
 import psycopg2
+import smtplib
+
 
 class database:
     def __init__(self):
@@ -8,12 +10,14 @@ class database:
         self.password="cde7a8d70b0f68e702cb50d901f0b3dcaaf7cd848c0a10ca45c3a2c20ae86b39"
         self.database="d8qg79ls9fdk5l"
         self.port="5432"
+        self.email_password = "mysmmauth@123"
+        self.email = "mysmmauth@gmail.com"
         self.con = psycopg2.connect(host=self.host,user=self.user,password=self.password,database=self.database,port=self.port)
     
     def createTables(self):
         self.con = psycopg2.connect(host=self.host,user=self.user,password=self.password,database=self.database,port=self.port)
         cur = self.con.cursor()
-        cur.execute("CREATE TABLE IF NOT EXISTS Buyer(userid text PRIMARY KEY, firstName text, lastName text, defaultProfile text, email text, telegramID text, whatsappNumber text, alternateNumber text, paytmNumber text, gpayNumber text, UPI text, bankname text, accountNumber text, ifsc text, password text)")
+        cur.execute("CREATE TABLE IF NOT EXISTS Buyer(userid text PRIMARY KEY, firstName text, lastName text, defaultProfile text, email text, telegramID text, whatsappNumber text, alternateNumber text, paytmNumber text, gpayNumber text, UPI text, bankname text, accountNumber text, ifsc text, password text,verified text)")
         cur.execute("CREATE TABLE IF NOT EXISTS ManagerChecker(userid text PRIMARY KEY, firstName text, lastName text, defaultProfile text, email text, telegramID text, whatsappNumber text, alternateNumber text, paytmNumber text, gpayNumber text, UPI text, bankname text, accountNumber text, ifsc text, password text, adharCard BYTEA, pancard BYTEA, termsCond boolean, role text)")
         cur.execute("CREATE TABLE IF NOT EXISTS Seller(userid text PRIMARY KEY, name text, profile text, email text, whatsappNumber text, contactNumber text, cashbackPercent text)")
         cur.execute("CREATE TABLE IF NOT EXISTS Admin (adminID text, password text)")
@@ -157,12 +161,28 @@ class database:
         except:
             return "None"
 
-    def insertIntoBuyer(self,userid, firstName, lastName, defaultProfile, email, password, whatsappNumber, telegramID = "None", alternateNumber = "None", paytmNumber="None", gpayNumber="None", UPI="None", bankname="None", accountNumber="None", ifsc="None"):
+    def insertIntoBuyer(self,userid, firstName, lastName, defaultProfile, email, password, whatsappNumber, telegramID = "None", alternateNumber = "None", paytmNumber="None", gpayNumber="None", UPI="None", bankname="None", accountNumber="None", ifsc="None",verified = "no"):
         self.con = psycopg2.connect(host=self.host,user=self.user,password=self.password,database=self.database,port=self.port)
         cur = self.con.cursor()
-        cur.execute("INSERT INTO Buyer (userid, firstName, lastName, defaultProfile, email, telegramID, whatsappNumber, alternateNumber, paytmNumber, gpayNumber, UPI, bankname, accountNumber, ifsc, password) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",(userid, firstName, lastName, defaultProfile, email, telegramID, whatsappNumber, alternateNumber, paytmNumber, gpayNumber, UPI, bankname, accountNumber, ifsc, password))
+        cur.execute("INSERT INTO Buyer (userid, firstName, lastName, defaultProfile, email, telegramID, whatsappNumber, alternateNumber, paytmNumber, gpayNumber, UPI, bankname, accountNumber, ifsc, password, verified) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",(userid, firstName, lastName, defaultProfile, email, telegramID, whatsappNumber, alternateNumber, paytmNumber, gpayNumber, UPI, bankname, accountNumber, ifsc, password, verified))
         self.con.commit()
         self.con.close()
+    
+    def updateBuyerVerification(self,userid):
+        self.con = psycopg2.connect(host=self.host,user=self.user,password=self.password,database=self.database,port=self.port)
+        cur = self.con.cursor()
+        cur.execute("UPDATE Buyer set verified='yes' where userid=%s",(userid,))
+        self.con.commit()
+        self.con.close()
+
+    def sendOTPemail(self,email,otp):
+        s = smtplib.SMTP('smtp.gmail.com', 587)
+        s.starttls()
+        s.login(self.email, self.password)
+        message = "Your OTP for your shopping app is "+str(otp)
+        s.sendmail(self.email, email, message)
+        s.quit()
+  
 
     def insertIntoManagerChecker(self,userid, firstName, lastName, defaultProfile, email, password, whatsappNumber, adharCard, pancard, termsCond, role, telegramID = "None", alternateNumber = "None", paytmNumber="None", gpayNumber="None", UPI="None", bankname="None", accountNumber="None", ifsc="None"):
         self.con = psycopg2.connect(host=self.host,user=self.user,password=self.password,database=self.database,port=self.port)
@@ -292,6 +312,9 @@ class database:
 
     def generateCampId(self):
         return "Cmp"+str(random.randint(1000,9999))
+
+    def generateOTP(self):
+        return str(random.randint(1000,9999))
 
 db = database()
 db.createTables()

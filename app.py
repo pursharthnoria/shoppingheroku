@@ -64,6 +64,18 @@ def login():
             return redirect("/managerDashboard")
 
 
+@app.route('/buyerDashboard')
+def buyerDashboard():
+    if session.get("userid"):
+        return render_template("user_dashboard.html",name = session['firstName'])
+
+
+@app.route('/activeCampaigns')
+def activeCampaigns():
+    if session.get("userid"):
+        return render_template("activeCampaigns.html",name = session['firstName'])
+
+
 @app.route('/adminDashboard')
 def adminDashboard():
     if session.get("name"):
@@ -303,7 +315,7 @@ def register():
     ifsc = request.form.get("ifsc",default="None")
     userid = db.generateBuyerId()
     try:
-        db.insertIntoBuyer(userid, firstName, lastName, profile, email, password, whatsapp, telegramID = telegram, alternateNumber = alternate, paytmNumber=paytm, gpayNumber=gpay, UPI=upi, bankname="None", accountNumber=account, ifsc=ifsc)
+        db.insertIntoBuyer(userid, firstName, lastName, profile, email, password, whatsapp, telegramID = telegram, alternateNumber = alternate, paytmNumber=paytm, gpayNumber=gpay, UPI=upi, bankname="None", accountNumber=account, ifsc=ifsc,verified="no")
         session["userid"] = userid
         session["firstName"] = firstName
         session["lastName"] = lastName
@@ -318,11 +330,31 @@ def register():
         session["bankname"] = "None"
         session["accountNumber"] = account
         session["ifsc"] = ifsc
-        session["password"] = password 
-        return redirect("/buyerDashboard")
+        session["password"] = password
+        otp = db.generateOTP()
+        db.sendOTPemail(email,otp)
+        session['otp'] = otp
+        return redirect("/pleaseVerify")
     except Exception as e:
         print(e)
         return redirect("/")
+
+
+@app.route("/pleaseVerify")
+def verify():
+    if session.get("userid"):
+        return render_template("pleaseVerify.html")
+
+
+@app.route("/verify",methods=['POST'])
+def verifyOTP():
+    if session.get("userid"):
+        otp = request.form.get("otp")
+        if otp == session.get("otp"):
+            db.updateBuyerVerification(session.get("userid"))
+            return redirect("/buyerDashboard")
+        else:
+            return redirect("/pleaseVerify")
 
 
 @app.route("/selectmanager/<campId>")
