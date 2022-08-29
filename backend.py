@@ -3,10 +3,10 @@ import psycopg2
 
 class database:
     def __init__(self):
-        self.host="ec2-34-234-240-121.compute-1.amazonaws.com"
-        self.user="czovqtfukrwecw"
-        self.password="0296d4f7459b9957844d9dd6fe7cc9c539db4d1b0e8a2387a20e9716ee9b4246"
-        self.database="dav3nd7ttc03v"
+        self.host="ec2-44-205-64-253.compute-1.amazonaws.com"
+        self.user="jjehaahapopvht"
+        self.password="cde7a8d70b0f68e702cb50d901f0b3dcaaf7cd848c0a10ca45c3a2c20ae86b39"
+        self.database="d8qg79ls9fdk5l"
         self.port="5432"
         self.con = psycopg2.connect(host=self.host,user=self.user,password=self.password,database=self.database,port=self.port)
     
