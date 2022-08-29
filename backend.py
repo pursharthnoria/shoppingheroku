@@ -1,7 +1,8 @@
 import random
 import psycopg2
+from email.message import EmailMessage
+import ssl
 import smtplib
-
 
 class database:
     def __init__(self):
@@ -10,7 +11,7 @@ class database:
         self.password="cde7a8d70b0f68e702cb50d901f0b3dcaaf7cd848c0a10ca45c3a2c20ae86b39"
         self.database="d8qg79ls9fdk5l"
         self.port="5432"
-        self.email_password = "mysmmauth@123"
+        self.email_password = "skslpqnnrurcycnt"
         self.email = "mysmmauth@gmail.com"
         self.con = psycopg2.connect(host=self.host,user=self.user,password=self.password,database=self.database,port=self.port)
     
@@ -176,13 +177,20 @@ class database:
         self.con.close()
 
     def sendOTPemail(self,email,otp):
-        s = smtplib.SMTP('smtp.gmail.com', 587)
-        s.starttls()
-        s.login(self.email, self.password)
-        message = "Your OTP for your shopping app is "+str(otp)
-        s.sendmail(self.email, email, message)
-        s.quit()
-  
+        em= EmailMessage()
+        em['From'] = self.email
+        em['to'] = email
+        em['subject'] = "Shopping app OTP"
+        em.set_content("You OTP for verification is: "+str(otp))
+        context = ssl.create_default_context()
+        with smtplib.SMTP_SSL("smtp.gmail.com",465,context=context) as smtp:
+            smtp.login(self.email,self.email_password)
+            smtp.sendmail(self.email,email,em.as_string())
+    
+    # def sendOTPwhatsapp(self,number,otp):
+    #     wa_client = client.Client(self.endpoint,self.token)
+    #     temp_params = {"otp":otp}
+    #     message = wa_client.send_template(number,)
 
     def insertIntoManagerChecker(self,userid, firstName, lastName, defaultProfile, email, password, whatsappNumber, adharCard, pancard, termsCond, role, telegramID = "None", alternateNumber = "None", paytmNumber="None", gpayNumber="None", UPI="None", bankname="None", accountNumber="None", ifsc="None"):
         self.con = psycopg2.connect(host=self.host,user=self.user,password=self.password,database=self.database,port=self.port)
