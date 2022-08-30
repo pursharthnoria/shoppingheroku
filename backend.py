@@ -22,10 +22,10 @@ class database:
         cur.execute("CREATE TABLE IF NOT EXISTS ManagerChecker(userid text PRIMARY KEY, firstName text, lastName text, defaultProfile text, email text, telegramID text, whatsappNumber text, alternateNumber text, paytmNumber text, gpayNumber text, UPI text, bankname text, accountNumber text, ifsc text, password text, adharCard BYTEA, pancard BYTEA, termsCond boolean, role text)")
         cur.execute("CREATE TABLE IF NOT EXISTS Seller(userid text PRIMARY KEY, name text, profile text, email text, whatsappNumber text, contactNumber text, cashbackPercent text)")
         cur.execute("CREATE TABLE IF NOT EXISTS Admin (adminID text, password text)")
-        cur.execute("CREATE TABLE IF NOT EXISTS Brand (brandID text PRIMARY KEY, brandName text, platformName text)")
-        cur.execute("CREATE TABLE IF NOT EXISTS Product (brandID text, productID text PRIMARY KEY, name text, quantity text, amount text)")
+        cur.execute("CREATE TABLE IF NOT EXISTS Brand (brandID text PRIMARY KEY, sellerID text, brandName text, platformName text)")
+        cur.execute("CREATE TABLE IF NOT EXISTS Product (brandID text, productID text PRIMARY KEY, name text, quantity text, amount text, commission text, gst text)")
         cur.execute("CREATE TABLE IF NOT EXISTS Campaign (campaignID text, brandname text, productname text, startdate DATE, enddate DATE, quantity text)")
-        cur.execute("CREATE TABLE IF NOT EXISTS Allocate (campaignID text, manager text, quantity text)")
+        cur.execute("CREATE TABLE IF NOT EXISTS Allocate (campaignID text, manager text, quantity text, amount text)")
         self.con.commit()
         self.con.close()
     
@@ -103,17 +103,27 @@ class database:
         cur = self.con.cursor()
         cur.execute("SELECT * FROM Brand")
         users = cur.fetchall()
+        self.con.commit()
+        self.con.close()
         d = []
         for user in users:
             temp = {}
             temp['id'] = user[0]
-            temp['name'] = user[1]
-            temp['platform'] = user[2]
+            temp['seller'] = self.getSellerName(user[1])
+            temp['name'] = user[2]
+            temp['platform'] = user[3]
             d.append(temp)
-        self.con.commit()
-        self.con.close()
         return d
     
+    def getSellerName(self,sellerID):
+        self.con = psycopg2.connect(host=self.host,user=self.user,password=self.password,database=self.database,port=self.port)
+        cur = self.con.cursor()
+        cur.execute("SELECT * FROM Seller where userid=%s",(sellerID,))
+        users = cur.fetchall()
+        self.con.commit()
+        self.con.close()
+        return users[0][1]
+
     def getBrandName(self,bndID):
         self.con = psycopg2.connect(host=self.host,user=self.user,password=self.password,database=self.database,port=self.port)
         cur = self.con.cursor()
@@ -147,6 +157,8 @@ class database:
             temp['name'] = user[2]
             temp['quantity'] = user[3]
             temp['amount'] = user[4]
+            temp['commission'] = user[5]
+            temp['gst'] = user[6]
             d.append(temp)
         return d
 
@@ -154,6 +166,18 @@ class database:
         self.con = psycopg2.connect(host=self.host,user=self.user,password=self.password,database=self.database,port=self.port)
         cur = self.con.cursor()
         cur.execute("SELECT * FROM Brand WHERE brandName=%s",(name,))
+        users = cur.fetchall()
+        self.con.commit()
+        self.con.close()
+        try:
+            return users[0][0]
+        except:
+            return "None"
+
+    def getSellerID(self,name):
+        self.con = psycopg2.connect(host=self.host,user=self.user,password=self.password,database=self.database,port=self.port)
+        cur = self.con.cursor()
+        cur.execute("SELECT * FROM Seller WHERE name=%s",(name,))
         users = cur.fetchall()
         self.con.commit()
         self.con.close()
@@ -213,17 +237,17 @@ class database:
         self.con.commit()
         self.con.close()
 
-    def insertIntoBrand(self,brandID, brandName, platformName):
+    def insertIntoBrand(self,brandID,sellerid, brandName, platformName):
         self.con = psycopg2.connect(host=self.host,user=self.user,password=self.password,database=self.database,port=self.port)
         cur = self.con.cursor()
-        cur.execute("INSERT INTO Brand (brandID, brandName, platformName) VALUES (%s,%s,%s)",(brandID, brandName, platformName))
+        cur.execute("INSERT INTO Brand (brandID,sellerID, brandName, platformName) VALUES (%s,%s,%s,%s)",(brandID, sellerid, brandName, platformName))
         self.con.commit()
         self.con.close()
     
-    def insertIntoProduct(self, brandID, productID, name, quantity,amount):
+    def insertIntoProduct(self, brandID, productID, name, quantity,amount,comm,gst):
         self.con = psycopg2.connect(host=self.host,user=self.user,password=self.password,database=self.database,port=self.port)
         cur = self.con.cursor()
-        cur.execute("INSERT INTO Product (brandID, productID, name, quantity,amount) VALUES (%s,%s,%s,%s,%s)",(brandID, productID, name, quantity, amount))
+        cur.execute("INSERT INTO Product (brandID, productID, name, quantity,amount, commission, gst) VALUES (%s,%s,%s,%s,%s,%s,%s)",(brandID, productID, name, quantity, amount, comm, gst))
         self.con.commit()
         self.con.close()
 
@@ -234,10 +258,10 @@ class database:
         self.con.commit()
         self.con.close()
 
-    def insertIntoAllocate(self,campaignID, manager, quantity):
+    def insertIntoAllocate(self,campaignID, manager, quantity, amount):
         self.con = psycopg2.connect(host=self.host,user=self.user,password=self.password,database=self.database,port=self.port)
         cur = self.con.cursor()
-        cur.execute("INSERT INTO Allocate (campaignID, manager, quantity) VALUES (%s,%s,%s)",(campaignID, manager, quantity))
+        cur.execute("INSERT INTO Allocate (campaignID, manager, quantity, amount) VALUES (%s,%s,%s,%s)",(campaignID, manager, quantity,amount))
         self.con.commit()
         self.con.close()
 

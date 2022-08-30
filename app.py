@@ -226,7 +226,11 @@ def addSellerButton():
 @app.route("/addBrand")
 def addBrand():
     if session.get("name"):
-        return render_template("brand_add.html")
+        sellers = db.getAllSellers()
+        names = []
+        for seller in sellers:
+            names.append(seller['name'])
+        return render_template("brand_add.html",sellers=names)
 
 
 @app.route("/addBrandButton",methods=["POST"])
@@ -234,9 +238,11 @@ def addBrandButton():
     if session.get("name"):
         name = request.form.get("name")
         platform = request.form.get("platform")
+        seller = request.form.get("seller")
+        sellerid = db.getSellerID(seller)
         bndID= db.generateBrandId()
         try:
-            db.insertIntoBrand(bndID,name,platform)
+            db.insertIntoBrand(bndID,sellerid,name,platform)
         except Exception as e:
             print(e)
         return redirect("/viewBrands")
@@ -260,10 +266,12 @@ def addProductButton():
         productname = request.form.get("productname")
         quantity = request.form.get("quantity")
         amount = request.form.get("amount")
+        commission = request.form.get("commission")
+        gst = request.form.get("gst")
         prdID= db.generatePrdId()
         try:
             if bndID!="None":
-                db.insertIntoProduct(bndID,prdID,productname,quantity,amount)
+                db.insertIntoProduct(bndID,prdID,productname,quantity,amount,commission,gst)
             else:
                 pass
         except Exception as e:
@@ -382,12 +390,14 @@ def allocate():
     if session.get("name"):
         managers = request.form.getlist("managers")
         quantities = request.form.getlist("quantity")
+        amounts = request.form.getlist("amount")
         campId = request.form.get("campId")
         for i in range(len(managers)):
             managers[i] = managers[i].split(" ")
             managers[i].append(quantities[i])
+            managers[i].append(amounts[i])
         for man in managers:
-            db.insertIntoAllocate(campId,man[0],man[3])
+            db.insertIntoAllocate(campId,man[0],man[3],man[4])
         return redirect("/viewCampaigns")
 
 

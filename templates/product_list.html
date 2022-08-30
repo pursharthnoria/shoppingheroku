@@ -206,7 +206,16 @@
                                                                 colspan="1"
                                                                 aria-label="Name: activate to sort column ascending"
                                                                 style="width: 163.406px;">Amount</th>
-                                                        
+                                                            <th class="sorting" tabindex="0"
+                                                                aria-controls="DataTables_Table_0" rowspan="1"
+                                                                colspan="1"
+                                                                aria-label="Name: activate to sort column ascending"
+                                                                style="width: 163.406px;">Commission</th>
+                                                            <th class="sorting" tabindex="0"
+                                                                aria-controls="DataTables_Table_0" rowspan="1"
+                                                                colspan="1"
+                                                                aria-label="Name: activate to sort column ascending"
+                                                                style="width: 163.406px;">GST</th>
                                                             <th class="text-end sorting" tabindex="0"
                                                                 aria-controls="DataTables_Table_0" rowspan="1"
                                                                 colspan="1"
@@ -222,6 +231,8 @@
                                                             <td>{{ product['quantity'] }}</td>
                                                             <td>{{ product['brand'] }}</td>
                                                             <td>{{ product['amount'] }}</td>    
+                                                            <td>{{ product['commission'] }}</td>
+                                                            <td>{{ product['gst'] }}%</td>    
                                                             <td class="text-end">
                                                                 <div class="actions">
                                                                     <a href="#"

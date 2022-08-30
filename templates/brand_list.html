@@ -189,6 +189,11 @@
                                                                 aria-controls="DataTables_Table_0" rowspan="1"
                                                                 colspan="1" aria-sort="ascending"
                                                                 aria-label="ID: activate to sort column descending"
+                                                                style="width: 50.5px;"> Seller</th>
+                                                            <th class="sorting_asc" tabindex="0"
+                                                                aria-controls="DataTables_Table_0" rowspan="1"
+                                                                colspan="1" aria-sort="ascending"
+                                                                aria-label="ID: activate to sort column descending"
                                                                 style="width: 50.5px;"> Brand Name</th>
                                                             <th class="sorting" tabindex="0"
                                                                 aria-controls="DataTables_Table_0" rowspan="1"
@@ -207,6 +212,7 @@
                                                         {% for brand in brands %}
                                                         <tr role="row" class="odd">
                                                             <td class="sorting_1">{{ brand['id'] }}</td>
+                                                            <td>{{ brand['seller'] }}</td>
                                                             <td>{{ brand['name'] }}</td>
                                                             <td>{{ brand['platform'] }}</td>
                                                          
