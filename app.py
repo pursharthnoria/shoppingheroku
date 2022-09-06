@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify, render_template, redirect, session, flash
 from flask_session import Session
 from backend import database
+from datetime import date
 
 db = database()
 db.createTables()
@@ -80,13 +81,21 @@ def buyerDashboard():
 @app.route('/activeCampaigns')
 def activeCampaigns():
     if session.get("userid"):
-        return render_template("activeCampaigns.html",name = session['firstName'])
+        camps = db.getAllCampaigns()
+        return render_template("activeCampaigns.html",name = session['firstName'],camps=camps)
 
 
-@app.route('/campaignForm')
-def campaignForm():
+@app.route('/campaignForm/<campID>')
+def campaignForm(campID):
     if session.get("userid"):
-        return render_template("form.html",name = session['firstName'])
+        alls = db.getAllById(campID)
+        camps = db.getCampById(campID)
+        product = camps[0]['product']
+        brand = camps[0]['brand']
+        manNames = []
+        for all in alls:
+            manNames.append((all['manager'],db.getManagerName(all['manager'])))
+        return render_template("form.html",name = session['firstName'],manNames = manNames,brand = brand, today = date.today(),product = product,campID = campID)
 
 
 @app.route('/adminDashboard')
@@ -301,9 +310,15 @@ def addCampaignButton():
         startdate = request.form.get("startdate")
         enddate = request.form.get("enddate")
         quantity = request.form.get("quantity")
+        ss1 = request.form.get("ss1")
+        ss2 = request.form.get("ss2")
+        link = request.form.get("link")
+        returnExp = request.form.get("returnExp")
+        orderDel = request.form.get("orderDel")
         campID= db.generateCampId()
         try:
             db.insertIntoCampaign(campID, brandname, product, startdate, enddate, quantity)
+            db.insertIntoFormDetails(campID,ss1,ss2,link,returnExp,orderDel)
         except Exception as e:
             print(e)
         return redirect("/viewCampaigns")
@@ -399,6 +414,54 @@ def allocate():
         for man in managers:
             db.insertIntoAllocate(campId,man[0],man[3],man[4])
         return redirect("/viewCampaigns")
+
+
+@app.route("/submitOrder",methods=["POST"])
+def submitOrder():
+    if session.get("userid"):
+        affiliate_name = request.form.get("affiliate_name")
+        brand = request.form.get("brand")
+        product = request.form.get("product")
+        manager = request.form.get("manager")
+        managers = manager.split(",")
+        for i in range(len(managers)):
+            if "(" in managers[i]:
+                managers[i] = managers[i].replace("(","")
+            if ")" in managers[i]:
+                managers[i] = managers[i].replace(")","")
+        managerid = managers[0]
+        # print(manager)
+        order_date = request.form.get("order_date")
+        order_id = request.form.get("order_id")
+        order_screenshot = request.form.get("order_screenshot")
+        order_amount = request.form.get("order_amount")
+        refund_amount = request.form.get("refund_amount")
+        brandID = db.getBrandID(brand)
+        ordID= db.generateOrdId()
+        uid = session.get("userid")
+        campid = request.form.get("campID")
+        try:
+            db.insertIntoOrder(uid,campid,ordID,affiliate_name,product,managerid,order_date,order_id,order_screenshot,order_amount,refund_amount,brandID)
+        except Exception as e:
+            print(e)
+        formDetails = db.getFormDetailsByCampId(campid)
+        ss1 = "no"
+        ss2 = "no"
+        link = "no"
+        returnExp = "no"
+        orderDel = "no"
+        for val in formDetails:
+            if val['ss1'] == "yes":
+                ss1 = "yes"
+            if val['ss2'] == "yes":
+                ss2 = "yes"
+            if val['link'] == "yes":
+                link = "yes"
+            if val['returnExp'] == "yes":
+                returnExp = "yes"
+            if val['orderDel'] == "yes":
+                orderDel="yes"
+        return render_template("form2.html",ss1 = ss1, ss2 = ss2, link = link, returnExp = returnExp, orderDel = orderDel)
 
 
 if __name__ == '__main__':

@@ -111,80 +111,52 @@
                                         </div>
                                         <div class="col-12 col-sm-6">
                                             <div class="form-group">
-                                                <label style="color:black ;">Affiliate Name <span style="color: red ;">*</span></label>
-                                                <input  type="text"
-                                                    name="affiliate_name" required class="form-control">
+                                                {% if ss1 == "yes" %}
+                                                    <label style="color:black ;">First screenshot: <span style="color: red ;">*</span></label>
+                                                    <input name="ss1"  type="file" required class="form-control">
+                                                {% else %}
+                                                    <input name="ss1"  type="file" class="form-control" value="None" hidden>
+                                                {% endif %}
                                             </div>
                                         </div>
                                         <div class="col-12 col-sm-6">
                                             <div class="form-group">
-                                                <label style="color:black ;">Brand Name <span style="color: red ;">*</span></label>
-                                                <input disabled type="text"
-                                                name="brand" value="{{ brand }}" class="form-control">
+                                                {% if ss2 == "yes" %}
+                                                    <label style="color:black ;">Second screenshot: <span style="color: red ;">*</span></label>
+                                                    <input name="ss2"  type="file" required class="form-control">
+                                                {% else %}
+                                                    <input name="ss2"  type="file" class="form-control" value="None" hidden>
+                                                {% endif %}
                                             </div>
                                         </div>
                                         <div class="col-12 col-sm-6">
                                             <div class="form-group">
-                                                <label style="color:black ;">Product Name <span style="color: red ;">*</span></label>
-                                                <input disabled type="text"
-                                                name="product" value="{{ product }}" class="form-control">
+                                                {% if link == "yes" %}
+                                                    <label style="color:black ;">Link:<span style="color: red ;">*</span></label>
+                                                    <input name="link"  type="text" required class="form-control">
+                                                {% else %}
+                                                    <input name="link"  type="file" class="form-control" value="None" hidden>
+                                                {% endif %}
                                             </div>
                                         </div>
                                         <div class="col-12 col-sm-6">
                                             <div class="form-group">
-                                                <label style="color:black ;">Campaign Manager <span style="color: red ;">*</span></label>
-                                               <select name="manager" class="form-control" id="">
-                                                <option disabled="" selected="">-selected-</option>
-                                                {% for manager in manNames %}
-                                                    <option value="{{ manager }}">{{ manager[1] }}</option>
-                                                {% endfor %}
-                                               </select>
+                                                {% if returnExp=="yes" %}
+                                                    <label style="color:black ;">Return expired Screenshot <span style="color: red ;">*</span></label>
+                                                    <input name="returnExp"  type="file" required class="form-control">
+                                                {% else %}
+                                                    <input name="returnExp"  type="file" class="form-control" value="None" hidden>
+                                                {% endif %}
                                             </div>
                                         </div>
                                         <div class="col-12 col-sm-6">
                                             <div class="form-group">
-                                                <label style="color:black ;">Order Date <span style="color: red ;">*</span></label>
-
-                                                <input disabled name="order_date"  type="date" value="{{ today }}"
-                                                    required class="form-control">
-                                            </div>
-                                        </div>
-                                        <div class="col-12 col-sm-6">
-                                            <div class="form-group">
-                                                <label style="color:black ;">Order ID As Text <span style="color: red ;">*</span></label>
-
-                                                <input name="order_id"  type="text"
-                                                    required class="form-control">
-                                            </div>
-                                        </div>
-                                        <div class="col-12 col-sm-6">
-                                            <div class="form-group">
-                                                <input name="campID"  type="text" hidden
-                                                    class="form-control" value="{{ campID }}">
-                                            </div>
-                                        </div>
-                                        <div class="col-12 col-sm-6">
-                                            <div class="form-group">
-                                                <label style="color:black ;">Order Screenshot <span style="color: red ;">*</span></label>
-
-                                                <input name="order_screenshot"  type="file"
-                                                    required class="form-control">
-                                            </div>
-                                        </div>
-                                        <div class="col-12 col-sm-6">
-                                            <div class="form-group">
-                                                <label style="color:black ;">Order Amount <span style="color: red ;">*</span></label>
-
-                                                <input name="order_amount"  type="text"
-                                                    required class="form-control">
-                                            </div>
-                                        </div>
-                                        <div class="col-12 col-sm-6">
-                                            <div class="form-group">
-                                                <label style="color:black ;">Refund Amount <span style="color: red ;">*</span></label>
-
-                                                <input name="refund_amount"  type="text"
-                                                    required class="form-control">
+                                                {% if orderDel=="yes" %}
+                                                    <label style="color:black ;">Return expired Screenshot <span style="color: red ;">*</span></label>
+                                                    <input name="orderDel"  type="file" required class="form-control">
+                                                {% else %}
+                                                    <input name="orderDel"  type="file" class="form-control" value="None" hidden>
+                                                {% endif %}
                                             </div>
                                         </div>
 
