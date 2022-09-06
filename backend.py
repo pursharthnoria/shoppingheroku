@@ -28,7 +28,7 @@ class database:
         cur.execute("CREATE TABLE IF NOT EXISTS Allocate (campaignID text, manager text, quantity text, amount text)")
         cur.execute("CREATE TABLE IF NOT EXISTS formDetails (campaignID text, ss1 text, ss2 text, link text, returnExp text, orderDel text)")
         cur.execute("CREATE TABLE IF NOT EXISTS Orders (userid text, campaignID text, orderID text, name text, product text, manager text, orderdate DATE, order_ID text, orderss BYTEA, orderAmount text, refund text,brand text)")
-
+        cur.execute("CREATE TABLE IF NOT EXISTS additionalOrderInfo (userid text, campaignID text, orderID text, ss1 BYTEA, ss2 BYTEA, link TEXT, returnExp BYTEA, orderDel BYTEA)")
         self.con.commit()
         self.con.close()
     
@@ -90,6 +90,27 @@ class database:
             temp['orderamount'] = user[9]
             temp['refund'] = user[10]
             temp['brand'] = user[11]
+            d.append(temp)
+        self.con.commit()
+        self.con.close()
+        return d
+
+    def getAdditionalOrderInfo(self):
+        self.con = psycopg2.connect(host=self.host,user=self.user,password=self.password,database=self.database,port=self.port)
+        cur = self.con.cursor()
+        cur.execute("SELECT * FROM additionalOrderInfo")
+        users = cur.fetchall()
+        d = []
+        for user in users:
+            temp = {}
+            temp['userid'] = user[0]
+            temp['campaignID'] = user[1]
+            temp['orderID'] = user[2]
+            temp['ss1'] = user[3]
+            temp['ss2'] = user[4]
+            temp['link'] = user[5]
+            temp['ReturnExp'] = user[6]
+            temp['orderDel'] = user[7]
             d.append(temp)
         self.con.commit()
         self.con.close()
@@ -308,6 +329,13 @@ class database:
         self.con = psycopg2.connect(host=self.host,user=self.user,password=self.password,database=self.database,port=self.port)
         cur = self.con.cursor()
         cur.execute("INSERT INTO Orders (userid,campaignID,orderID, name, product, manager, orderdate, order_ID, orderss, orderAmount, refund, brand) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",(userid,campaignID,orderID, name, product, manager, orderdate, order_ID, orderss, orderAmount, refund, brand))
+        self.con.commit()
+        self.con.close()
+
+    def insertIntoAdditionalOrderInfo(self,userid, campaignID, orderID, ss1, ss2, link, returnExp, orderDel):
+        self.con = psycopg2.connect(host=self.host,user=self.user,password=self.password,database=self.database,port=self.port)
+        cur = self.con.cursor()
+        cur.execute("INSERT INTO Orders (userid, campaignID, orderID, ss1, ss2, link, returnExp, orderDel) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)",(userid, campaignID, orderID, ss1, ss2, link, returnExp, orderDel))
         self.con.commit()
         self.con.close()
 

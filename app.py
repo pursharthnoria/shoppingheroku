@@ -461,7 +461,20 @@ def submitOrder():
                 returnExp = "yes"
             if val['orderDel'] == "yes":
                 orderDel="yes"
-        return render_template("form2.html",ss1 = ss1, ss2 = ss2, link = link, returnExp = returnExp, orderDel = orderDel)
+        return render_template("form2.html",ss1 = ss1, ss2 = ss2, link = link, returnExp = returnExp, orderDel = orderDel,orderID= ordID,campid=campid)
+
+@app.route("/submitOrderDetails",methods=["POST"])
+def submitOrderDetails():
+    if session.get("userid"):
+        ss1 = request.form.get("ss1")
+        ss2 = request.form.get("ss2")
+        link = request.form.get("link")
+        returnExp = request.form.get("returnExp")
+        orderDel = request.form.get("orderDel")
+        ordID = request.form.get("ordID")
+        campid = request.form.get("campid")
+        db.insertIntoAdditionalOrderInfo(session.get('userid'),campid,ordID,ss1,ss2,link,returnExp,orderDel)
+        return redirect("/buyerDashboard")
 
 
 if __name__ == '__main__':
