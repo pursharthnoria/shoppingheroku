@@ -70,6 +70,21 @@ def login():
             session["ifsc"] = details["ifsc"]
             session["password"] = details["password"] 
             return redirect("/managerDashboard")
+        elif role=="seller":
+            session["userid"] = details["userid"]
+            session["name"] = details["name"]
+            session["profile"] = details["profile"]
+            session["email"] = details["email"]
+            session["whatsapp"] = details["whatsapp"]
+            session["contact"] = details["contact"]
+            session["cashback"] = details["cashback"]
+            return redirect("/sellerDashboard")
+
+
+@app.route('/sellerDashboard')
+def sellerDashboard():
+    if session.get("userid"):
+        return render_template("seller_dashboard.html",name = session['name'])
 
 
 @app.route('/buyerDashboard')
@@ -116,6 +131,27 @@ def viewManagers():
     if session.get("name"):
         managers = db.getAllManagers()
         return render_template("manager_list.html",managers = managers)
+
+
+@app.route("/getSellerBrands")
+def getSellerBrands():
+    if session.get("userid"):
+        managers = db.getBrandBySeller(session.get('userid')) 
+        return render_template("sellerBrands.html",managers = managers)
+
+
+@app.route("/getSellerProducts")
+def getSellerProducts():
+    if session.get("userid"):
+        products = db.getProductBySeller(session.get("userid"))
+        return render_template("sellerProducts.html",products=products)
+
+
+@app.route("/getSellerCampaigns")
+def getSellerCampaigns():
+    if session.get("userid"):
+        camps = db.getAllCampaigns()
+        return render_template("sellerCampsList.html",camps=camps)
 
 
 @app.route("/viewSellers")

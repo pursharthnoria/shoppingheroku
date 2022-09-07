@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+    <title> Dashboard</title>
+
+    <link rel="shortcut icon" href="{{ url_for('static', filename='assets/img/favicon.png') }}">
+
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,500;0,600;0,700;1,400&display=swap') }}">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/plugins/bootstrap/css/bootstrap.min.css') }}">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/plugins/fontawesome/css/fontawesome.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/plugins/fontawesome/css/all.min.css') }}">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/style.css') }}">
+</head>
+
+<body>
+
+    <div class="main-wrapper">
+        <div class="header">
+
+            <div class="header-left">
+                <a href="index.html" class="logo">
+                    <h4>Admin</h4>
+                </a>
+                <a href="index.html" class="logo logo-small">
+                    <h4>Admin</h4>
+                </a>
+            </div>
+
+            <a href="javascript:void(0);" id="toggle_btn">
+                <i class="fas fa-align-left"></i>
+            </a>
+
+
+
+            <a class="mobile_btn" id="mobile_btn">
+                <i class="fas fa-bars"></i>
+            </a>
+
+
+            <ul class="nav user-menu">
+
+
+
+
+              
+
+            </ul>
+
+        </div>
+
+
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-inner slimscroll">
+                <div id="sidebar-menu" class="sidebar-menu">
+                    <ul>
+                        <li class="menu-title">
+                            <span>Main Menu</span>
+                        </li>
+                        <li class=" ">
+                            <a href="/sellerDashboard"><i class="fas fa-clipboard"></i> <span> Dashboard</span>
+                        </li>
+
+                        <li class=" ">
+                            <a href="/getSellerBrands"><i class="fas fa-clipboard"></i> <span>Brands</span>
+                        </li>
+
+                        <li class=" ">
+                            <a href="/getSellerProducts"><i class="fas fa-clipboard"></i> <span>Products</span>
+                        </li>
+
+                        <li class=" active">
+                            <a href="/getSellerCampaigns"><i class="fas fa-clipboard"></i> <span>Campaigns</span>
+                        </li>
+
+                        <li>
+                            <a href="/logout"><i class="fas fa-holly-berry"></i> <span>Logout</span></a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="page-wrapper">
+            <div class="content container-fluid">
+
+                <div class="page-header">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <h3 class="page-title">Welcome Admin!</h3>
+                            <ul class="breadcrumb">
+                                <li class="breadcrumb-item active">Brands list</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                {% for camp in camps %}
+                <div class="row">
+                    <div class="col-12 col-md-6 col-lg-12 my-3 d-flex" style="box-shadow: 0px 2px 2px 5px #00000038;">
+                        <div class="card flex-fill">
+                            <div class="card-header" style="background-color: #18aefa !important">
+                                <h5 class="card-title mb-0 text-center" style="color: white;">{{ camp['brand'] + " " + camp['product'] }}</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-xl-4 col-md-4  text-center my-3">
+                                        Start Date
+                                        <h6>{{ camp['start_date'] }}</h6>
+                                    </div>
+
+
+                                    <div class="col-xl-4 col-md-4 text-center   my-3">
+                                        End Date
+                                        <h6>{{ camp['end_date'] }}</h6>
+                                    </div>
+
+
+                                    <div class="col-xl-4 col-md-4 text-center   my-3">
+                                        Quantity
+                                        <h6>{{ camp['quantity'] }}</h6>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+    <script src="{{ url_for('static', filename='assets/js/jquery-3.6.0.min.js') }}"></script>
+
+    <script src="{{ url_for('static', filename='assets/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+
+    <script src="{{ url_for('static', filename='assets/plugins/slimscroll/jquery.slimscroll.min.js') }}"></script>
+
+    <script src="{{ url_for('static', filename='assets/plugins/apexchart/apexcharts.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='assets/plugins/apexchart/chart-data.js') }}"></script>
+
+    <script src="{{ url_for('static', filename='assets/js/script.js') }}"></script>
+</body>
+
+</html>

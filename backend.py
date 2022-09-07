@@ -31,6 +31,43 @@ class database:
         cur.execute("CREATE TABLE IF NOT EXISTS additionalOrderInfo (userid text, campaignID text, orderID text, ss1 BYTEA, ss2 BYTEA, link TEXT, returnExp BYTEA, orderDel BYTEA)")
         self.con.commit()
         self.con.close()
+
+    def getBrandBySeller(self,sellerID):
+        print(sellerID)
+        self.con = psycopg2.connect(host=self.host,user=self.user,password=self.password,database=self.database,port=self.port)
+        cur = self.con.cursor()
+        cur.execute("SELECT * FROM Brand where sellerID=%s",(sellerID,))
+        users = cur.fetchall()
+        self.con.commit()
+        self.con.close()
+        d = []
+        for user in users:
+            temp = {}
+            temp['id'] = user[0]
+            temp['name'] = user[2]
+            temp['platform'] = user[3]
+            d.append(temp)
+        return d
+    
+    def getProductBySeller(self,sellerID):
+        self.con = psycopg2.connect(host=self.host,user=self.user,password=self.password,database=self.database,port=self.port)
+        cur = self.con.cursor()
+        cur.execute("SELECT * FROM Product where brandID in (SELECT brandID from Brand where sellerID=%s)",(sellerID,))
+        users = cur.fetchall()
+        self.con.commit()
+        self.con.close()
+        d = []
+        for user in users:
+            temp = {}
+            temp['id'] = user[1]
+            temp['brand'] = self.getBrandName(user[0])
+            temp['name'] = user[2]
+            temp['quantity'] = user[3]
+            temp['amount'] = user[4]
+            temp['commission'] = user[5]
+            temp['gst'] = user[6]
+            d.append(temp)
+        return d
     
     def getFormDetailsByCampId(self,campID):
         self.con = psycopg2.connect(host=self.host,user=self.user,password=self.password,database=self.database,port=self.port)
@@ -263,7 +300,7 @@ class database:
         users = cur.fetchall()
         self.con.commit()
         self.con.close()
-        return users[0][1]
+        return users[0][2]
 
     def getAllocations(self,campID):
         self.con = psycopg2.connect(host=self.host,user=self.user,password=self.password,database=self.database,port=self.port)
@@ -428,8 +465,8 @@ class database:
         admins = cur.fetchall()
         cur.execute("SELECT * FROM ManagerChecker WHERE email=%s and password=%s and role=%s",(email,password,"Manager"))
         managers = cur.fetchall()
-        # cur.execute("SELECT * FROM Seller WHERE email=%s and password=%s",(email,password))
-        # sellers = cur.fetchall()
+        cur.execute("SELECT * FROM Seller WHERE email=%s",(email,))
+        sellers = cur.fetchall()
         if len(buyers)>0:
             role = "buyer"
             d= {
@@ -474,6 +511,17 @@ class database:
             "accountNumber":managers[0][12], 
             "ifsc":managers[0][13], 
             "password":managers[0][14]
+            }
+        elif len(sellers)>0:
+            role = "seller"
+            d= {
+            "userid":sellers[0][0], 
+            "name":sellers[0][1], 
+            "profile":sellers[0][2], 
+            "email":sellers[0][3], 
+            "whatsapp":sellers[0][4], 
+            "contact":sellers[0][5], 
+            "cashback":sellers[0][6]
             }
         else: 
             return False
