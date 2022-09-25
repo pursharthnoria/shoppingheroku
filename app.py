@@ -105,8 +105,11 @@ def campaignForm(campID):
     if session.get("userid"):
         alls = db.getAllById(campID)
         camps = db.getCampById(campID)
+        print(camps)
         product = camps[0]['product']
         brand = camps[0]['brand']
+        print(product)
+        print(brand)
         manNames = []
         for all in alls:
             manNames.append((all['manager'],db.getManagerName(all['manager'])))
@@ -137,7 +140,7 @@ def viewManagers():
 def getSellerBrands():
     if session.get("userid"):
         managers = db.getBrandBySeller(session.get('userid')) 
-        return render_template("sellerBrands.html",managers = managers)
+        return render_template("sellerBrands.html",brands = managers)
 
 
 @app.route("/getSellerProducts")
@@ -187,6 +190,13 @@ def viewAllMan(campaignID):
     if session.get("name"):
         allocations = db.getAllocations(campaignID)
         return render_template("view_manager.html",allocations=allocations)
+
+
+@app.route("/view_products/<campaignID>")
+def view_products(campaignID):
+    if session.get("name"):
+        allocations = db.getAllocateProducts(campaignID)
+        return render_template("view_products.html",allocations=allocations)
 
 
 @app.route("/logout")
@@ -342,18 +352,17 @@ def addCampaign():
 def addCampaignButton():
     if session.get("name"):
         brandname = request.form.get("brandname")
-        product = request.form.get("product")
         startdate = request.form.get("startdate")
         enddate = request.form.get("enddate")
-        quantity = request.form.get("quantity")
         ss1 = request.form.get("ss1")
         ss2 = request.form.get("ss2")
         link = request.form.get("link")
         returnExp = request.form.get("returnExp")
         orderDel = request.form.get("orderDel")
         campID= db.generateCampId()
+        brandId = db.getBrandID(brandname)
         try:
-            db.insertIntoCampaign(campID, brandname, product, startdate, enddate, quantity)
+            db.insertIntoCampaign(campID, brandId, startdate, enddate)
             db.insertIntoFormDetails(campID,ss1,ss2,link,returnExp,orderDel)
         except Exception as e:
             print(e)
@@ -436,19 +445,44 @@ def selectmanagers(campId):
         return render_template('select_manager.html',managers=managers,campID = campId)
 
 
+@app.route("/select_product/<campId>/<brandname>")
+def select_product(campId,brandname):
+    if session.get("name"):
+        brandID = db.getBrandID(brandname)
+        products = db.getProductByBrand(brandID)
+        return render_template('select_products.html',products=products,campID = campId)
+
+
+@app.route("/allocateProducts",methods=['POST'])
+def allocateProducts():
+    if session.get("name"):
+        products = request.form.getlist("products")
+        quantities = request.form.getlist("quantity")
+        amounts = request.form.getlist("amount")
+        campId = request.form.get("campId")
+        prodList = []
+        for i in range(len(products)):
+            temp = []
+            temp.append(products[i])
+            temp.append(quantities[i])
+            temp.append(amounts[i])
+            prodList.append(temp)
+        for prod in prodList:
+            db.insertIntoAllocateProducts(campId, prod[0], prod[1], prod[2])
+        return redirect("/viewCampaigns")
+
+
 @app.route("/allocatemanagers",methods=['POST'])
 def allocate():
     if session.get("name"):
         managers = request.form.getlist("managers")
-        quantities = request.form.getlist("quantity")
-        amounts = request.form.getlist("amount")
+        print(managers)
         campId = request.form.get("campId")
         for i in range(len(managers)):
             managers[i] = managers[i].split(" ")
-            managers[i].append(quantities[i])
-            managers[i].append(amounts[i])
+        print(managers)
         for man in managers:
-            db.insertIntoAllocate(campId,man[0],man[3],man[4])
+            db.insertIntoAllocate(campId,man[0])
         return redirect("/viewCampaigns")
 
 
@@ -502,13 +536,13 @@ def submitOrder():
 @app.route("/submitOrderDetails",methods=["POST"])
 def submitOrderDetails():
     if session.get("userid"):
-        ss1 = request.form.get("ss1")
-        ss2 = request.form.get("ss2")
-        link = request.form.get("link")
-        returnExp = request.form.get("returnExp")
-        orderDel = request.form.get("orderDel")
-        ordID = request.form.get("ordID")
-        campid = request.form.get("campid")
+        ss1 = request.form.get("ss1",default=None)
+        ss2 = request.form.get("ss2",default=None)
+        link = request.form.get("link",default=None)
+        returnExp = request.form.get("returnExp",default=None)
+        orderDel = request.form.get("orderDel",default=None)
+        ordID = request.form.get("ordID",default=None)
+        campid = request.form.get("campid",default=None)
         db.insertIntoAdditionalOrderInfo(session.get('userid'),campid,ordID,ss1,ss2,link,returnExp,orderDel)
         return redirect("/buyerDashboard")
 

@@ -157,7 +157,7 @@
                     <div class="col-12 col-md-6 col-lg-12 my-3 d-flex" style="box-shadow: 0px 2px 2px 5px #00000038;">
                         <div class="card flex-fill">
                             <div class="card-header" style="background-color: #18aefa !important">
-                                <h5 class="card-title mb-0 text-center" style="color: white;">{{ camp['brand'] + " " + camp['product'] }}</h5>
+                                <h5 class="card-title mb-0 text-center" style="color: white;">{{ camp['brandname'] }}</h5>
                             </div>
                             <div class="card-body">
                                 <div class="row">
@@ -174,15 +174,17 @@
 
 
                                     <div class="col-xl-4 col-md-4 text-center   my-3">
-                                        Quantity
-                                        <h6>{{ camp['quantity'] }}</h6>
+                                        Campaign ID
+                                        <h6>{{ camp['campaignID'] }}</h6>
                                     </div>
                                 </div>
                                 <div style="margin-top:5% ;">
 
 
                                     <a class="card-link pull-right btn btn-info" style="background-color: #18aefa !important;color: white;" href="/view_manager/{{ camp['campaignID'] }}">View</a>
-                                    <a class="card-link float-end btn btn-info" style="background-color: #18aefa !important ;color: white;" href="/selectmanager/{{ camp['campaignID'] }}">Select Manger</a>
+                                    <a class="card-link pull-right btn btn-info" style="background-color: #18aefa !important ;color: white;" href="/selectmanager/{{ camp['campaignID'] }}">Select Manger</a>
+                                    <a class="card-link float-end btn btn-info" style="background-color: #18aefa !important;color: white;" href="/select_product/{{ camp['campaignID'] }}//{{ camp['brandname'] }}">Add Products</a>
+                                    <a class="card-link float-end btn btn-info" style="background-color: #18aefa !important;color: white;" href="/view_products/{{ camp['campaignID'] }}">View products</a>
                                 </div>
                             </div>
                         </div>

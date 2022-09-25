@@ -23,7 +23,6 @@
 <body>
 
     <div class="main-wrapper">
-
         <div class="header">
 
             <div class="header-left">
@@ -159,6 +158,7 @@
                         <div class="card card-table">
                             <div class="card-body">
                                 <div class="table-responsive">
+                                    <form action="/allocateProducts" method="post">
                                     <div id="DataTables_Table_0_wrapper"
                                         class="dataTables_wrapper dt-bootstrap4 no-footer">
                                         <div class="row">
@@ -187,34 +187,75 @@
                                                                 aria-controls="DataTables_Table_0" rowspan="1"
                                                                 colspan="1" aria-sort="ascending"
                                                                 aria-label="ID: activate to sort column descending"
-                                                                style="width: 50.5px;"> Campaign ID</th>
-                                                            <th class="sorting_asc" tabindex="0"
-                                                                aria-controls="DataTables_Table_0" rowspan="1"
-                                                                colspan="1" aria-sort="ascending"
-                                                                aria-label="ID: activate to sort column descending"
-                                                                style="width: 50.5px;"> Manager Name</th>
-                                                            <!-- <th class="sorting" tabindex="0"
-                                                                aria-controls="DataTables_Table_0" rowspan="1"
-                                                                colspan="1"
-                                                                aria-label="Name: activate to sort column ascending"
-                                                                style="width: 163.406px;">Quantity</th>
+                                                                style="width: 50.5px;">ID</th>
                                                             <th class="sorting" tabindex="0"
                                                                 aria-controls="DataTables_Table_0" rowspan="1"
                                                                 colspan="1"
                                                                 aria-label="Name: activate to sort column ascending"
-                                                                style="width: 163.406px;">Amount per piece</th> -->
-                                                           
+                                                                style="width: 163.406px;">Brand</th>
+                                                            <th class="sorting" tabindex="0"
+                                                                aria-controls="DataTables_Table_0" rowspan="1"
+                                                                colspan="1"
+                                                                aria-label="Class: activate to sort column ascending"
+                                                                style="width: 42.7031px;">Name</th>
+                                                            <th class="sorting" tabindex="0"
+                                                                aria-controls="DataTables_Table_0" rowspan="1"
+                                                                colspan="1"
+                                                                aria-label="Parent Name: activate to sort column ascending"
+                                                                style="width: 97.8281px;">Quantity</th>
+                                                            <th class="sorting" tabindex="0"
+                                                                aria-controls="DataTables_Table_0" rowspan="1"
+                                                                colspan="1"
+                                                                aria-label="Parent Name: activate to sort column ascending"
+                                                                style="width: 97.8281px;">Amount (per piece)</th>
+                                                            <th class="sorting" tabindex="0"
+                                                                aria-controls="DataTables_Table_0" rowspan="1"
+                                                                colspan="1"
+                                                                aria-label="Parent Name: activate to sort column ascending"
+                                                                style="width: 97.8281px;">Commission</th>
+                                                            <th class="sorting" tabindex="0"
+                                                                aria-controls="DataTables_Table_0" rowspan="1"
+                                                                colspan="1"
+                                                                aria-label="Parent Name: activate to sort column ascending"
+                                                                style="width: 97.8281px;">GST</th>
+                                                            <th class="text-end sorting" tabindex="0"
+                                                                aria-controls="DataTables_Table_0" rowspan="1"
+                                                                colspan="1"
+                                                                aria-label="Action: activate to sort column ascending"
+                                                                style="width: 70.2344px;">Action</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        {% for alloc in allocations %}
+                                                        {% for prod in products %}
                                                         <tr role="row" class="odd">
-                                                            <td class="sorting_1">{{ alloc[0] }}</td>
-                                                            <td>{{ alloc[1] }}</td>
-                                                            <!-- <td>{{ alloc[2] }}</td>
-                                                            <td>{{ alloc[3] }}</td> -->
+                                                            <td class="sorting_1">{{ prod['id'] }}</td>
+                                                           
+                                                            <td>{{ prod['brand'] }}</td>
+                                                            <td>{{ prod['name'] }}</td>
+                                                            <td><div class="form-group">
+                                               
+                                                                <input required type="text" name="quantity" value="0" placeholder="Enter the quantity" class="form-control">
+                                                            </div></td>
+                                                            <td><div class="form-group">
+                                               
+                                                                <input required type="text" name="amount" value="0" placeholder="Enter the amount per piece" class="form-control">
+                                                            </div></td>
+                                                            <td>{{ prod['commission'] }}</td>
+                                                            <td>{{ prod['gst'] }}</td>
+                                                            <td class="text-end">
+                                                                <div class="actions">
+                                                                    <input type="checkbox"  class="me-4s mt-3" name="products" value="{{ prod['id'] }}">
+                                                                    
+                                                                </div>
+                                                            </td>
+                                                            <div class="form-group">
+                                               
+                                                                <input type="text" name="campId" value="{{ campID }}" class="form-control" hidden>
+                                                            </div>
                                                         </tr>
                                                         {% endfor %}
+                                                        
+                                                        
                                                     </tbody>
                                                 </table>
                                             </div>
@@ -224,7 +265,7 @@
                                                 <div class="dataTables_info" id="DataTables_Table_0_info" role="status"
                                                     aria-live="polite">Showing 1 to 10 of 11 entries</div>
                                             </div>
-                                            <div class="col-sm-12 col-md-7">
+                                            <div class="col-sm-12 col-md-5">
                                                 <div class="dataTables_paginate paging_simple_numbers"
                                                     id="DataTables_Table_0_paginate">
                                                     <ul class="pagination">
@@ -245,8 +286,14 @@
                                                     </ul>
                                                 </div>
                                             </div>
+                                            <div class="col-sm-12 col-md-2">
+                                             <div class="my-3 text-end">
+                                                <input type="submit" class="btn btn-info" value="Save">
+                                             </div>
+                                            </div>
                                         </div>
                                     </div>
+                                </form>
                                 </div>
                             </div>
                         </div>

@@ -24,8 +24,9 @@ class database:
         cur.execute("CREATE TABLE IF NOT EXISTS Admin (adminID text, password text)")
         cur.execute("CREATE TABLE IF NOT EXISTS Brand (brandID text PRIMARY KEY, sellerID text, brandName text, platformName text)")
         cur.execute("CREATE TABLE IF NOT EXISTS Product (brandID text, productID text PRIMARY KEY, name text, quantity text, amount text, commission text, gst text)")
-        cur.execute("CREATE TABLE IF NOT EXISTS Campaign (campaignID text, brandname text, productname text, startdate DATE, enddate DATE, quantity text)")
-        cur.execute("CREATE TABLE IF NOT EXISTS Allocate (campaignID text, manager text, quantity text, amount text)")
+        cur.execute("CREATE TABLE IF NOT EXISTS Campaign (campaignID text, brandID text, startdate DATE, enddate DATE)")
+        cur.execute("CREATE TABLE IF NOT EXISTS allocateProducts (campaignID text, productId text, quantity text, amount text)")
+        cur.execute("CREATE TABLE IF NOT EXISTS Allocate (campaignID text, manager text)")
         cur.execute("CREATE TABLE IF NOT EXISTS formDetails (campaignID text, ss1 text, ss2 text, link text, returnExp text, orderDel text)")
         cur.execute("CREATE TABLE IF NOT EXISTS Orders (userid text, campaignID text, orderID text, name text, product text, manager text, orderdate DATE, order_ID text, orderss BYTEA, orderAmount text, refund text,brand text)")
         cur.execute("CREATE TABLE IF NOT EXISTS additionalOrderInfo (userid text, campaignID text, orderID text, ss1 BYTEA, ss2 BYTEA, link TEXT, returnExp BYTEA, orderDel BYTEA)")
@@ -40,6 +41,7 @@ class database:
         users = cur.fetchall()
         self.con.commit()
         self.con.close()
+        print(users)
         d = []
         for user in users:
             temp = {}
@@ -69,6 +71,26 @@ class database:
             d.append(temp)
         return d
     
+    def getProductByBrand(self,brandID):
+        self.con = psycopg2.connect(host=self.host,user=self.user,password=self.password,database=self.database,port=self.port)
+        cur = self.con.cursor()
+        cur.execute("SELECT * FROM Product where brandID=%s",(brandID,))
+        users = cur.fetchall()
+        self.con.commit()
+        self.con.close()
+        d = []
+        for user in users:
+            temp = {}
+            temp['id'] = user[1]
+            temp['brand'] = self.getBrandName(user[0])
+            temp['name'] = user[2]
+            temp['quantity'] = user[3]
+            temp['amount'] = user[4]
+            temp['commission'] = user[5]
+            temp['gst'] = user[6]
+            d.append(temp)
+        return d
+
     def getFormDetailsByCampId(self,campID):
         self.con = psycopg2.connect(host=self.host,user=self.user,password=self.password,database=self.database,port=self.port)
         cur = self.con.cursor()
@@ -158,18 +180,16 @@ class database:
         cur = self.con.cursor()
         cur.execute("SELECT * FROM Campaign")
         users = cur.fetchall()
+        self.con.commit()
+        self.con.close()
         d = []
         for user in users:
             temp = {}
             temp['campaignID'] = user[0]
-            temp['brand'] = user[1]
-            temp['product'] = user[2]
-            temp['start_date'] = user[3]
-            temp['end_date'] = user[4]
-            temp['quantity'] = user[5]
+            temp['brandname'] = self.getBrandName(user[1])
+            temp['start_date'] = user[2]
+            temp['end_date'] = user[3]
             d.append(temp)
-        self.con.commit()
-        self.con.close()
         return d
 
     def getAllById(self,campID):
@@ -310,6 +330,15 @@ class database:
         self.con.commit()
         self.con.close()
         return users
+    
+    def getAllocateProducts(self,campID):
+        self.con = psycopg2.connect(host=self.host,user=self.user,password=self.password,database=self.database,port=self.port)
+        cur = self.con.cursor()
+        cur.execute("SELECT * FROM allocateProducts where campaignID=%s",(campID,))
+        users = cur.fetchall()
+        self.con.commit()
+        self.con.close()
+        return users
 
     def getAllProducts(self):
         self.con = psycopg2.connect(host=self.host,user=self.user,password=self.password,database=self.database,port=self.port)
@@ -355,6 +384,13 @@ class database:
         except:
             return "None"
 
+    def insertIntoAllocateProducts(self,campaignID, productId, quantity, amount):
+        self.con = psycopg2.connect(host=self.host,user=self.user,password=self.password,database=self.database,port=self.port)
+        cur = self.con.cursor()
+        cur.execute("INSERT INTO allocateProducts (campaignID, productId, quantity, amount) VALUES (%s,%s,%s,%s)",(campaignID, productId, quantity, amount))
+        self.con.commit()
+        self.con.close()
+
     def insertIntoBuyer(self,userid, firstName, lastName, defaultProfile, email, password, whatsappNumber, telegramID = "None", alternateNumber = "None", paytmNumber="None", gpayNumber="None", UPI="None", bankname="None", accountNumber="None", ifsc="None",verified = "no"):
         self.con = psycopg2.connect(host=self.host,user=self.user,password=self.password,database=self.database,port=self.port)
         cur = self.con.cursor()
@@ -372,7 +408,7 @@ class database:
     def insertIntoAdditionalOrderInfo(self,userid, campaignID, orderID, ss1, ss2, link, returnExp, orderDel):
         self.con = psycopg2.connect(host=self.host,user=self.user,password=self.password,database=self.database,port=self.port)
         cur = self.con.cursor()
-        cur.execute("INSERT INTO Orders (userid, campaignID, orderID, ss1, ss2, link, returnExp, orderDel) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)",(userid, campaignID, orderID, ss1, ss2, link, returnExp, orderDel))
+        cur.execute("INSERT INTO additionalOrderInfo (userid, campaignID, orderID, ss1, ss2, link, returnExp, orderDel) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)",(userid, campaignID, orderID, ss1, ss2, link, returnExp, orderDel))
         self.con.commit()
         self.con.close()
 
@@ -434,10 +470,10 @@ class database:
         self.con.commit()
         self.con.close()
 
-    def insertIntoCampaign(self, campaignID, brandname, productname, startdate, enddate, quantity):
+    def insertIntoCampaign(self, campaignID, brandID, startdate, enddate):
         self.con = psycopg2.connect(host=self.host,user=self.user,password=self.password,database=self.database,port=self.port)
         cur = self.con.cursor()
-        cur.execute("INSERT INTO Campaign (campaignID, brandname, productname, startdate, enddate, quantity) VALUES (%s,%s,%s,%s,%s,%s)",(campaignID, brandname, productname, startdate, enddate, quantity))
+        cur.execute("INSERT INTO Campaign (campaignID, brandID, startdate, enddate) VALUES (%s,%s,%s,%s)",(campaignID, brandID, startdate, enddate))
         self.con.commit()
         self.con.close()
 
@@ -448,10 +484,10 @@ class database:
         self.con.commit()
         self.con.close()
 
-    def insertIntoAllocate(self,campaignID, manager, quantity, amount):
+    def insertIntoAllocate(self,campaignID, manager):
         self.con = psycopg2.connect(host=self.host,user=self.user,password=self.password,database=self.database,port=self.port)
         cur = self.con.cursor()
-        cur.execute("INSERT INTO Allocate (campaignID, manager, quantity, amount) VALUES (%s,%s,%s,%s)",(campaignID, manager, quantity,amount))
+        cur.execute("INSERT INTO Allocate (campaignID, manager) VALUES (%s,%s)",(campaignID, manager))
         self.con.commit()
         self.con.close()
 
