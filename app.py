@@ -559,7 +559,6 @@ def submittedForms():
             d['campID'] = form[1]
             d['prodcut'] = db.getProdNameById(form[4])
             manID = form[5].replace("'","")
-            print(manID)
             d['manager'] = db.getManagerName(manID)
             d['orderdate'] = form[6]
             d['orderID'] = form[7]
