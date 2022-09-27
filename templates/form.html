@@ -107,7 +107,7 @@
                                 <form method="POST" action="/submitOrder">
                                     <div class="row">
                                         <div class="col-12">
-                                            <h5 class="form-title"><span> Details:</span></h5>
+                                            <h5 class="form-title"><span> {{ brand }} Campaign:</span></h5>
                                         </div>
                                         <div class="col-12 col-sm-6">
                                             <div class="form-group">
@@ -118,16 +118,19 @@
                                         </div>
                                         <div class="col-12 col-sm-6">
                                             <div class="form-group">
-                                                <label style="color:black ;">Brand Name <span style="color: red ;">*</span></label>
-                                                <input disabled type="text"
+                                                <input hidden type="text"
                                                 name="brand" value="{{ brand }}" class="form-control">
                                             </div>
                                         </div>
                                         <div class="col-12 col-sm-6">
                                             <div class="form-group">
                                                 <label style="color:black ;">Product Name <span style="color: red ;">*</span></label>
-                                                <input disabled type="text"
-                                                name="product" value="{{ product }}" class="form-control">
+                                                <select name="product" class="form-control" id="">
+                                                    <option selected="">-selected-</option>
+                                                    {% for product in products %}
+                                                        <option value="{{ product[0] + ' ' + product[1] }}">{{ product[1] }}</option>
+                                                    {% endfor %}
+                                                   </select>
                                             </div>
                                         </div>
                                         <div class="col-12 col-sm-6">
@@ -143,9 +146,7 @@
                                         </div>
                                         <div class="col-12 col-sm-6">
                                             <div class="form-group">
-                                                <label style="color:black ;">Order Date <span style="color: red ;">*</span></label>
-
-                                                <input disabled name="order_date"  type="date" value="{{ today }}"
+                                                <input hidden name="order_date"  type="date" value="{{ today }}"
                                                     class="form-control">
                                             </div>
                                         </div>

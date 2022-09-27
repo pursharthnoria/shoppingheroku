@@ -105,15 +105,13 @@ def campaignForm(campID):
     if session.get("userid"):
         alls = db.getAllById(campID)
         camps = db.getCampById(campID)
-        print(camps)
-        product = camps[0]['product']
-        brand = camps[0]['brand']
-        print(product)
-        print(brand)
+        prods = db.getProdsByCampId(campID)
+        print(prods)
+        brand = db.getBrandName(camps[0]['brand'])
         manNames = []
         for all in alls:
             manNames.append((all['manager'],db.getManagerName(all['manager'])))
-        return render_template("form.html",name = session['firstName'],manNames = manNames,brand = brand, today = date.today(),product = product,campID = campID)
+        return render_template("form.html",name = session['firstName'],manNames = manNames,brand = brand, today = date.today(),products = prods,campID = campID)
 
 
 @app.route('/adminDashboard')
@@ -491,7 +489,9 @@ def submitOrder():
     if session.get("userid"):
         affiliate_name = request.form.get("affiliate_name")
         brand = request.form.get("brand")
-        product = request.form.get("product")
+        product = request.form.get("product").split(" ")
+        productId = product[0]
+        productName = product[1]
         manager = request.form.get("manager")
         managers = manager.split(",")
         for i in range(len(managers)):
@@ -511,7 +511,7 @@ def submitOrder():
         uid = session.get("userid")
         campid = request.form.get("campID")
         try:
-            db.insertIntoOrder(uid,campid,ordID,affiliate_name,product,managerid,order_date,order_id,order_screenshot,order_amount,refund_amount,brandID)
+            db.insertIntoOrder(uid,campid,ordID,affiliate_name,productId,managerid,order_date,order_id,order_screenshot,order_amount,refund_amount,brandID)
         except Exception as e:
             print(e)
         formDetails = db.getFormDetailsByCampId(campid)
@@ -542,10 +542,32 @@ def submitOrderDetails():
         returnExp = request.form.get("returnExp",default=None)
         orderDel = request.form.get("orderDel",default=None)
         ordID = request.form.get("ordID",default=None)
+        print(ordID)
         campid = request.form.get("campid",default=None)
+        print(campid)
         db.insertIntoAdditionalOrderInfo(session.get('userid'),campid,ordID,ss1,ss2,link,returnExp,orderDel)
         return redirect("/buyerDashboard")
 
+
+@app.route("/submittedForms")
+def submittedForms():
+    if session.get("userid"):
+        forms = db.getFormByUserId(session.get("userid"))
+        formData = []
+        for form in forms:
+            d = {}
+            d['campID'] = form[1]
+            d['prodcut'] = db.getProdNameById(form[4])
+            manID = form[5].replace("'","")
+            print(manID)
+            d['manager'] = db.getManagerName(manID)
+            d['orderdate'] = form[6]
+            d['orderID'] = form[7]
+            d['orderAmount'] = form[9]
+            d['refund'] = form[10]
+            d['brand'] = db.getBrandName(form[11])
+            formData.append(d)
+        return render_template("submitted_forms.html",forms=formData)
 
 if __name__ == '__main__':
   
