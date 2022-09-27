@@ -568,6 +568,14 @@ def submittedForms():
             formData.append(d)
         return render_template("submitted_forms.html",forms=formData)
 
+@app.route("/submittedUserFroms")
+def submittedUserFroms():
+    if session.get("name"):
+        forms = db.getAllOrders()
+        for i in range(len(forms)):
+            forms[i]['username'] = db.getUserByUserId(forms[i]['userid'])
+        return render_template("submittedUserForms.html",forms=forms)
+
 if __name__ == '__main__':
   
     # run() method of Flask class runs the application 

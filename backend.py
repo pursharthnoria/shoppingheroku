@@ -59,6 +59,15 @@ class database:
         self.con.close()
         return users
 
+    def getUserByUserId(self,userID):
+        self.con = psycopg2.connect(host=self.host,user=self.user,password=self.password,database=self.database,port=self.port)
+        cur = self.con.cursor()
+        cur.execute("SELECT * FROM Buyer where userid=%s",(userID,))
+        users = cur.fetchall()
+        self.con.commit()
+        self.con.close()
+        return users[0][1] + " " + users[0][2]
+
     def getProductBySeller(self,sellerID):
         self.con = psycopg2.connect(host=self.host,user=self.user,password=self.password,database=self.database,port=self.port)
         cur = self.con.cursor()
