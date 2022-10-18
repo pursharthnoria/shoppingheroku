@@ -18,18 +18,18 @@ class database:
     def createTables(self):
         self.con = psycopg2.connect(host=self.host,user=self.user,password=self.password,database=self.database,port=self.port)
         cur = self.con.cursor()
-        cur.execute("CREATE TABLE IF NOT EXISTS Buyer(userid text PRIMARY KEY, firstName text, lastName text, defaultProfile text, email text, telegramID text, whatsappNumber text, alternateNumber text, paytmNumber text, gpayNumber text, UPI text, bankname text, accountNumber text, ifsc text, password text,verified text)")
-        cur.execute("CREATE TABLE IF NOT EXISTS ManagerChecker(userid text PRIMARY KEY, firstName text, lastName text, defaultProfile text, email text, telegramID text, whatsappNumber text, alternateNumber text, paytmNumber text, gpayNumber text, UPI text, bankname text, accountNumber text, ifsc text, password text, adharCard BYTEA, pancard BYTEA, termsCond boolean, role text)")
-        cur.execute("CREATE TABLE IF NOT EXISTS Seller(userid text PRIMARY KEY, name text, profile text, email text, whatsappNumber text, contactNumber text, cashbackPercent text)")
+        cur.execute("CREATE TABLE IF NOT EXISTS Buyer(userid text PRIMARY KEY, firstName text, lastName text, defaultProfile text, email text, telegramID text, whatsappNumber text, alternateNumber text, paytmNumber text, gpayNumber text, UPI text, bankname text, accountNumber text, ifsc text, password text,emailVerified text,profilepic BYTEA,whatsappVerified text)")
+        cur.execute("CREATE TABLE IF NOT EXISTS Manager(userid text PRIMARY KEY, firstName text, lastName text, defaultProfile text, email text, telegramID text, whatsappNumber text, alternateNumber text, paytmNumber text, gpayNumber text, UPI text, bankname text, accountNumber text, ifsc text, password text, adharCard BYTEA, pancard BYTEA, termsCond boolean, approved text)")
+        cur.execute("CREATE TABLE IF NOT EXISTS Seller(userid text PRIMARY KEY, name text, profile text, email text, whatsappNumber text, contactNumber text, cashbackPercent text, password text)")
         cur.execute("CREATE TABLE IF NOT EXISTS Admin (adminID text, password text)")
         cur.execute("CREATE TABLE IF NOT EXISTS Brand (brandID text PRIMARY KEY, sellerID text, brandName text, platformName text)")
         cur.execute("CREATE TABLE IF NOT EXISTS Product (brandID text, productID text PRIMARY KEY, name text, quantity text, amount text, commission text, gst text)")
-        cur.execute("CREATE TABLE IF NOT EXISTS Campaign (campaignID text, brandID text, startdate DATE, enddate DATE)")
-        cur.execute("CREATE TABLE IF NOT EXISTS allocateProducts (campaignID text, productId text, quantity text, amount text)")
-        cur.execute("CREATE TABLE IF NOT EXISTS Allocate (campaignID text, manager text)")
-        cur.execute("CREATE TABLE IF NOT EXISTS formDetails (campaignID text, ss1 text, ss2 text, link text, returnExp text, orderDel text)")
-        cur.execute("CREATE TABLE IF NOT EXISTS Orders (userid text, campaignID text, orderID text, name text, product text, manager text, orderdate DATE, order_ID text, orderss BYTEA, orderAmount text, refund text,brand text)")
-        cur.execute("CREATE TABLE IF NOT EXISTS additionalOrderInfo (userid text, campaignID text, orderID text, ss1 BYTEA, ss2 BYTEA, link TEXT, returnExp BYTEA, orderDel BYTEA)")
+        cur.execute("CREATE TABLE IF NOT EXISTS Campaign (campaignID text, campaignName text, brandID text, startdate DATE, enddate DATE)")
+        cur.execute("CREATE TABLE IF NOT EXISTS allocateProductsToCamp (campaignID text, productID text, quantity text)")
+        cur.execute("CREATE TABLE IF NOT EXISTS allocateManagersToCamp (campaignID text, managerID text, slots text)")
+        # cur.execute("CREATE TABLE IF NOT EXISTS formDetails (campaignID text, ss1 text, ss2 text, link text, returnExp text, orderDel text)")
+        # cur.execute("CREATE TABLE IF NOT EXISTS Orders (userid text, campaignID text, orderID text, name text, product text, manager text, orderdate DATE, order_ID text, orderss BYTEA, orderAmount text, refund text,brand text)")
+        # cur.execute("CREATE TABLE IF NOT EXISTS additionalOrderInfo (userid text, campaignID text, orderID text, ss1 BYTEA, ss2 BYTEA, link TEXT, returnExp BYTEA, orderDel BYTEA)")
         self.con.commit()
         self.con.close()
 
@@ -203,9 +203,10 @@ class database:
         for user in users:
             temp = {}
             temp['campaignID'] = user[0]
-            temp['brandname'] = self.getBrandName(user[1])
-            temp['start_date'] = user[2]
-            temp['end_date'] = user[3]
+            temp['name'] = user[1]
+            temp['brandname'] = self.getBrandName(user[2])
+            temp['start_date'] = user[3]
+            temp['end_date'] = user[4]
             d.append(temp)
         return d
 
@@ -233,9 +234,10 @@ class database:
         for user in users:
             temp = {}
             temp['campaignID'] = user[0]
-            temp['brand'] = user[1]
-            temp['start_date'] = user[2]
-            temp['end_date'] = user[3]
+            temp['name'] = user[1]
+            temp['brand'] = user[2]
+            temp['start_date'] = user[3]
+            temp['end_date'] = user[4]
             d.append(temp)
         self.con.commit()
         self.con.close()
@@ -254,7 +256,7 @@ class database:
         
         return d
     
-    
+  
     def getProdNameById(self,id):
         self.con = psycopg2.connect(host=self.host,user=self.user,password=self.password,database=self.database,port=self.port)
         cur = self.con.cursor()
@@ -282,7 +284,7 @@ class database:
     def getAllManagers(self):
         self.con = psycopg2.connect(host=self.host,user=self.user,password=self.password,database=self.database,port=self.port)
         cur = self.con.cursor()
-        cur.execute("SELECT * FROM ManagerChecker where role=%s",("Manager",))
+        cur.execute("SELECT * FROM Manager where approved=%s",("yes",))
         users = cur.fetchall()
         d = []
         for user in users:
@@ -297,6 +299,46 @@ class database:
         self.con.close()
         return d
     
+    def getNonApprovedApps(self):
+        self.con = psycopg2.connect(host=self.host,user=self.user,password=self.password,database=self.database,port=self.port)
+        cur = self.con.cursor()
+        cur.execute("SELECT * FROM Manager where approved=%s",("no",))
+        users = cur.fetchall()
+        d = []
+        for user in users:
+            temp = {}
+            temp['userID'] = user[0]
+            temp['firstname'] = user[1]
+            temp['lastname'] = user[2]
+            temp['defaultProfile'] = user[3]
+            temp['email'] = user[4]
+            temp['whatsapp'] = user[6]
+            d.append(temp)
+        self.con.commit()
+        self.con.close()
+        return d
+    
+    def removeUser(self,userID):
+        self.con = psycopg2.connect(host=self.host,user=self.user,password=self.password,database=self.database,port=self.port)
+        cur = self.con.cursor()
+        cur.execute("DELETE FROM Buyer where userid=%s",(userID,))
+        self.con.commit()
+        self.con.close()
+
+    def updateManagerApproval(self,userID):
+        self.con = psycopg2.connect(host=self.host,user=self.user,password=self.password,database=self.database,port=self.port)
+        cur = self.con.cursor()
+        cur.execute("UPDATE Manager set approved=%s where userid=%s",("yes",userID))
+        self.con.commit()
+        self.con.close()
+
+    def removeManager(self,userID):
+        self.con = psycopg2.connect(host=self.host,user=self.user,password=self.password,database=self.database,port=self.port)
+        cur = self.con.cursor()
+        cur.execute("DELETE FROM Manager where userid=%s",(userID,))
+        self.con.commit()
+        self.con.close()
+
     def getAllSellers(self):
         self.con = psycopg2.connect(host=self.host,user=self.user,password=self.password,database=self.database,port=self.port)
         cur = self.con.cursor()
@@ -344,7 +386,7 @@ class database:
     def getManagerName(self,managerID):
         self.con = psycopg2.connect(host=self.host,user=self.user,password=self.password,database=self.database,port=self.port)
         cur = self.con.cursor()
-        cur.execute("SELECT * FROM ManagerChecker where userid=%s",(managerID,))
+        cur.execute("SELECT * FROM Manager where userid=%s",(managerID,))
         users = cur.fetchall()
         self.con.commit()
         self.con.close()
@@ -359,10 +401,10 @@ class database:
         self.con.close()
         return users[0][2]
 
-    def getAllocations(self,campID):
+    def getManagerAllocations(self,campID):
         self.con = psycopg2.connect(host=self.host,user=self.user,password=self.password,database=self.database,port=self.port)
         cur = self.con.cursor()
-        cur.execute("SELECT * FROM Allocate where campaignID=%s",(campID,))
+        cur.execute("SELECT * FROM allocateManagersToCamp where campaignID=%s",(campID,))
         users = cur.fetchall()
         self.con.commit()
         self.con.close()
@@ -371,7 +413,7 @@ class database:
     def getAllocateProducts(self,campID):
         self.con = psycopg2.connect(host=self.host,user=self.user,password=self.password,database=self.database,port=self.port)
         cur = self.con.cursor()
-        cur.execute("SELECT * FROM allocateProducts where campaignID=%s",(campID,))
+        cur.execute("SELECT * FROM allocateProductsToCamp where campaignID=%s",(campID,))
         users = cur.fetchall()
         self.con.commit()
         self.con.close()
@@ -421,17 +463,18 @@ class database:
         except:
             return "None"
 
-    def insertIntoAllocateProducts(self,campaignID, productId, quantity, amount):
+    def insertIntoAllocateProducts(self,campaignID, productId, quantity):
         self.con = psycopg2.connect(host=self.host,user=self.user,password=self.password,database=self.database,port=self.port)
         cur = self.con.cursor()
-        cur.execute("INSERT INTO allocateProducts (campaignID, productId, quantity, amount) VALUES (%s,%s,%s,%s)",(campaignID, productId, quantity, amount))
+        cur.execute("INSERT INTO allocateProductsToCamp (campaignID, productId, quantity) VALUES (%s,%s,%s)",(campaignID, productId, quantity))
         self.con.commit()
         self.con.close()
 
-    def insertIntoBuyer(self,userid, firstName, lastName, defaultProfile, email, password, whatsappNumber, telegramID = "None", alternateNumber = "None", paytmNumber="None", gpayNumber="None", UPI="None", bankname="None", accountNumber="None", ifsc="None",verified = "no"):
+
+    def insertIntoBuyer(self,userid, firstName, lastName, defaultProfile, email, password, whatsappNumber, telegramID = "None", alternateNumber = "None", paytmNumber="None", gpayNumber="None", UPI="None", bankname="None", accountNumber="None", ifsc="None",emailVerified = "no",profilepic=None,whatsappVerified="no"):
         self.con = psycopg2.connect(host=self.host,user=self.user,password=self.password,database=self.database,port=self.port)
         cur = self.con.cursor()
-        cur.execute("INSERT INTO Buyer (userid, firstName, lastName, defaultProfile, email, telegramID, whatsappNumber, alternateNumber, paytmNumber, gpayNumber, UPI, bankname, accountNumber, ifsc, password, verified) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",(userid, firstName, lastName, defaultProfile, email, telegramID, whatsappNumber, alternateNumber, paytmNumber, gpayNumber, UPI, bankname, accountNumber, ifsc, password, verified))
+        cur.execute("INSERT INTO Buyer (userid, firstName, lastName, defaultProfile, email, telegramID, whatsappNumber, alternateNumber, paytmNumber, gpayNumber, UPI, bankname, accountNumber, ifsc, password,emailVerified,profilepic,whatsappVerified) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",(userid, firstName, lastName, defaultProfile, email, telegramID, whatsappNumber, alternateNumber, paytmNumber, gpayNumber, UPI, bankname, accountNumber, ifsc, password,emailVerified,profilepic,whatsappVerified))
         self.con.commit()
         self.con.close()
     
@@ -449,10 +492,10 @@ class database:
         self.con.commit()
         self.con.close()
 
-    def updateBuyerVerification(self,userid):
+    def updateBuyerGmailVerification(self,userid):
         self.con = psycopg2.connect(host=self.host,user=self.user,password=self.password,database=self.database,port=self.port)
         cur = self.con.cursor()
-        cur.execute("UPDATE Buyer set verified='yes' where userid=%s",(userid,))
+        cur.execute("UPDATE Buyer set emailVerified='yes' where userid=%s",(userid,))
         self.con.commit()
         self.con.close()
 
@@ -472,17 +515,17 @@ class database:
     #     temp_params = {"otp":otp}
     #     message = wa_client.send_template(number,)
 
-    def insertIntoManagerChecker(self,userid, firstName, lastName, defaultProfile, email, password, whatsappNumber, adharCard, pancard, termsCond, role, telegramID = "None", alternateNumber = "None", paytmNumber="None", gpayNumber="None", UPI="None", bankname="None", accountNumber="None", ifsc="None"):
+    def insertIntoManager(self,userid, firstName, lastName, defaultProfile, email, password, whatsappNumber, adharCard, pancard, termsCond, telegramID = "None", alternateNumber = "None", paytmNumber="None", gpayNumber="None", UPI="None", bankname="None", accountNumber="None", ifsc="None",approved="yes"):
         self.con = psycopg2.connect(host=self.host,user=self.user,password=self.password,database=self.database,port=self.port)
         cur = self.con.cursor()
-        cur.execute("INSERT INTO ManagerChecker (userid, firstName, lastName, defaultProfile, email, telegramID, whatsappNumber, alternateNumber, paytmNumber, gpayNumber, UPI, bankname, accountNumber, ifsc, password, adharCard, pancard, termsCond, role) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",(userid, firstName, lastName, defaultProfile, email, telegramID, whatsappNumber, alternateNumber, paytmNumber, gpayNumber, UPI, bankname, accountNumber, ifsc, password, adharCard, pancard, termsCond, role))
+        cur.execute("INSERT INTO Manager (userid, firstName, lastName, defaultProfile, email, telegramID, whatsappNumber, alternateNumber, paytmNumber, gpayNumber, UPI, bankname, accountNumber, ifsc, password, adharCard, pancard, termsCond, approved) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",(userid, firstName, lastName, defaultProfile, email, telegramID, whatsappNumber, alternateNumber, paytmNumber, gpayNumber, UPI, bankname, accountNumber, ifsc, password, adharCard, pancard, termsCond, approved))
         self.con.commit()
         self.con.close()
     
-    def insertIntoSeller(self,userid, Name, profile, email, whatsappNumber, contactNumber, cashbackPercent):
+    def insertIntoSeller(self,userid, Name, profile, email, whatsappNumber, contactNumber, cashbackPercent, password):
         self.con = psycopg2.connect(host=self.host,user=self.user,password=self.password,database=self.database,port=self.port)
         cur = self.con.cursor()
-        cur.execute("INSERT INTO Seller (userid, name, profile, email, whatsappNumber, contactNumber, cashbackPercent) VALUES (%s,%s,%s,%s,%s,%s,%s)",(userid, Name, profile, email, whatsappNumber, contactNumber, cashbackPercent))
+        cur.execute("INSERT INTO Seller (userid, name, profile, email, whatsappNumber, contactNumber, cashbackPercent, password) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)",(userid, Name, profile, email, whatsappNumber, contactNumber, cashbackPercent,password))
         self.con.commit()
         self.con.close()
     
@@ -507,10 +550,10 @@ class database:
         self.con.commit()
         self.con.close()
 
-    def insertIntoCampaign(self, campaignID, brandID, startdate, enddate):
+    def insertIntoCampaign(self, campaignID, name, brandID, startdate, enddate):
         self.con = psycopg2.connect(host=self.host,user=self.user,password=self.password,database=self.database,port=self.port)
         cur = self.con.cursor()
-        cur.execute("INSERT INTO Campaign (campaignID, brandID, startdate, enddate) VALUES (%s,%s,%s,%s)",(campaignID, brandID, startdate, enddate))
+        cur.execute("INSERT INTO Campaign (campaignID, campaignName, brandID, startdate, enddate) VALUES (%s,%s,%s,%s,%s)",(campaignID, name, brandID, startdate, enddate))
         self.con.commit()
         self.con.close()
 
@@ -521,10 +564,10 @@ class database:
         self.con.commit()
         self.con.close()
 
-    def insertIntoAllocate(self,campaignID, manager):
+    def insertIntoAllocateManagers(self,campaignID, manager,slots):
         self.con = psycopg2.connect(host=self.host,user=self.user,password=self.password,database=self.database,port=self.port)
         cur = self.con.cursor()
-        cur.execute("INSERT INTO Allocate (campaignID, manager) VALUES (%s,%s)",(campaignID, manager))
+        cur.execute("INSERT INTO allocateManagersToCamp (campaignID, managerID,slots) VALUES (%s,%s,%s)",(campaignID, manager,slots))
         self.con.commit()
         self.con.close()
 
@@ -536,9 +579,9 @@ class database:
         # print(buyers)
         cur.execute("SELECT * FROM Admin WHERE adminID=%s and password=%s",(email,password))
         admins = cur.fetchall()
-        cur.execute("SELECT * FROM ManagerChecker WHERE email=%s and password=%s and role=%s",(email,password,"Manager"))
+        cur.execute("SELECT * FROM Manager WHERE email=%s and password=%s",(email,password))
         managers = cur.fetchall()
-        cur.execute("SELECT * FROM Seller WHERE email=%s",(email,))
+        cur.execute("SELECT * FROM Seller WHERE email=%s and password=%s",(email,password))
         sellers = cur.fetchall()
         if len(buyers)>0:
             role = "buyer"
@@ -558,7 +601,9 @@ class database:
             "accountNumber":buyers[0][12], 
             "ifsc":buyers[0][13], 
             "password":buyers[0][14],
-            "verified":buyers[0][15]
+            "emailVerified":buyers[0][15],
+            "profilePic":buyers[0][16],
+            "whatsappVerified":buyers[0][17]
             }
         elif len(admins)>0:
             role = "admin"
@@ -594,7 +639,8 @@ class database:
             "email":sellers[0][3], 
             "whatsapp":sellers[0][4], 
             "contact":sellers[0][5], 
-            "cashback":sellers[0][6]
+            "cashback":sellers[0][6],
+            "password":sellers[0][7]
             }
         else: 
             return False

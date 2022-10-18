@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -22,8 +23,7 @@
 <body>
 
     <div class="main-wrapper">
-
-
+     
         <div class="header">
 
             <div class="header-left">
@@ -51,7 +51,7 @@
 
 
 
-
+              
 
             </ul>
 
@@ -68,13 +68,13 @@
                         <li class=" ">
                             <a href="/buyerDashboard"><i class="fas fa-clipboard"></i> <span> Dashboard</span></a>
                         </li>
-                        <li class=" active">
+                        <li class=" ">
                             <a href="/activeCampaigns"><i class="fas fa-clipboard"></i> <span> Campaigns</span></a>
                         </li>
                         <li class=" ">
                             <a href="/submittedForms"><i class="fas fa-clipboard"></i> <span>Submitted Forms</span></a>
                         </li>
-                        <li class=" ">
+                        <li class=" active">
                             <a href="/applyForManager"><i class="fas fa-clipboard"></i> <span>Apply for manager</span></a>
                         </li>
                         <li class=" ">
@@ -103,50 +103,49 @@
                     </div>
                 </div>
 
-                {% for camp in camps %}
                 <div class="row">
-                    <a href="/campaignForm/{{ camp['campaignID'] }}">
-
-                    <div class="col-12 col-md-6 col-lg-12 my-3 d-flex" style="box-shadow: 0px 2px 2px 5px #00000038;">
-                        <div class="card flex-fill">
-                            <div class="card-header" style="background-color: #18aefa !important">
-                                <h5 class="card-title mb-0 text-center" style="color: white;">{{ camp['brandname'] }}</h5>
-                            </div>
+                    <div class="col-sm-12">
+                        <div class="card">
                             <div class="card-body">
-                             <div class="row">
-                                    <div class="col-xl-4 col-md-4  text-center my-3">
-                                        Start Date
-                                        <h6>{{ camp['start_date'] }}</h6>
+                                <form method="POST" action="/applyManager">
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <h5 class="form-title"><span>Manager Application</span></h5>
+                                        </div>
+                                        <div class="col-12 col-sm-6">
+                                            <div class="form-group">
+                                                <input  type="checkbox"
+                                                    name="terms" required>
+                                                    <label style="color:black ;"><span style="color: red ;">*</span>Agree to terms and conditions</label>
+                                                
+                                            </div>
+                                        </div>
+                                        <div class="col-12 col-sm-6">
+                                            <div class="form-group">
+                                                <label style="color:black ;">Adhar card Screenshot: <span style="color: red ;">*</span></label>
+                                                <input  type="file"
+                                                    name="adhar card" required class="form-control">
+                                            </div>
+                                        </div>
+                                        <div class="col-12 col-sm-6">
+                                            <div class="form-group">
+                                                <label style="color:black ;">Pan card Screenshot: <span style="color: red ;">*</span></label>
+                                                <input  type="file"
+                                                    name="pan card" required class="form-control">
+                                            </div>
+                                        </div>
+                                                                       
+                                      
+
+                                        <div class="col-12">
+                                            <button type="submit" class="btn btn-primary">Apply</button>
+                                        </div>
                                     </div>
-
-
-                                    <div class="col-xl-4 col-md-4 text-center   my-3">
-                                        End Date
-                                        <h6>{{ camp['end_date'] }}</h6>
-                                    </div>
-
-
-                                    <div class="col-xl-4 col-md-4 text-center   my-3">
-                                        Campaign ID
-                                        <h6>{{ camp['campaignID'] }}</h6>
-                                    </div>
-                                </div>
-                            
+                                </form>
                             </div>
                         </div>
-                   
                     </div>
-                </a>
-
-                  
-
-
-
-
-
                 </div>
-                {% endfor %}
-
 
 
             </div>

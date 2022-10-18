@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -10,7 +9,7 @@
     <link rel="shortcut icon" href="{{ url_for('static', filename='assets/img/favicon.png') }}">
 
     <link rel="stylesheet"
-        href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,500;0,600;0,700;1,400&display=swap">
+        href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,500;0,600;0,700;1,400&display=swap') }}">
 
     <link rel="stylesheet" href="{{ url_for('static', filename='assets/plugins/bootstrap/css/bootstrap.min.css') }}">
 
@@ -87,7 +86,7 @@
                             <ul>
                                 <li><a href="/viewManagers">Managers List</a></li>
                                 <li><a href="/addManager">Manager Add</a></li>
-                                <li><a href="/managerApplications">Manager  Applications</a></li>
+                                <li><a href="/managerApplications">Manager Applications</a></li>
                             </ul>
                         </li>
                         <li class="submenu">
@@ -124,7 +123,7 @@
                             <ul>
                                 <li><a href="/viewCampaigns">Camaigns List</a></li>
                                 <li><a href="/addCampaign">Campaign Add</a></li>
-                                  
+                                   
 
                             </ul>
                         </li>
@@ -139,7 +138,6 @@
         </div>
 
 
-
         <div class="page-wrapper">
             <div class="content container-fluid">
 
@@ -148,7 +146,7 @@
                         <div class="col-sm-12">
                             <h3 class="page-title">Welcome Admin!</h3>
                             <ul class="breadcrumb">
-                                <li class="breadcrumb-item active">Dashboard</li>
+                                <li class="breadcrumb-item active">Brands list</li>
                             </ul>
                         </div>
                     </div>
@@ -158,7 +156,6 @@
                         <div class="card card-table">
                             <div class="card-body">
                                 <div class="table-responsive">
-                                    <form action="/allocateProducts" method="post">
                                     <div id="DataTables_Table_0_wrapper"
                                         class="dataTables_wrapper dt-bootstrap4 no-footer">
                                         <div class="row">
@@ -187,66 +184,56 @@
                                                                 aria-controls="DataTables_Table_0" rowspan="1"
                                                                 colspan="1" aria-sort="ascending"
                                                                 aria-label="ID: activate to sort column descending"
-                                                                style="width: 50.5px;">ID</th>
+                                                                style="width: 50.5px;"> User ID</th>
+                                                            <th class="sorting_asc" tabindex="0"
+                                                                aria-controls="DataTables_Table_0" rowspan="1"
+                                                                colspan="1" aria-sort="ascending"
+                                                                aria-label="ID: activate to sort column descending"
+                                                                style="width: 50.5px;">Name</th>
+                                                            <th class="sorting_asc" tabindex="0"
+                                                                aria-controls="DataTables_Table_0" rowspan="1"
+                                                                colspan="1" aria-sort="ascending"
+                                                                aria-label="ID: activate to sort column descending"
+                                                                style="width: 50.5px;">Default profile</th>
                                                             <th class="sorting" tabindex="0"
                                                                 aria-controls="DataTables_Table_0" rowspan="1"
                                                                 colspan="1"
                                                                 aria-label="Name: activate to sort column ascending"
-                                                                style="width: 163.406px;">Brand</th>
+                                                                style="width: 163.406px;">Email</th>
                                                             <th class="sorting" tabindex="0"
                                                                 aria-controls="DataTables_Table_0" rowspan="1"
                                                                 colspan="1"
-                                                                aria-label="Class: activate to sort column ascending"
-                                                                style="width: 42.7031px;">Name</th>
-                                                            <th class="sorting" tabindex="0"
-                                                                aria-controls="DataTables_Table_0" rowspan="1"
-                                                                colspan="1"
-                                                                aria-label="Parent Name: activate to sort column ascending"
-                                                                style="width: 97.8281px;">Quantity</th>
-                                                            <th class="sorting" tabindex="0"
-                                                                aria-controls="DataTables_Table_0" rowspan="1"
-                                                                colspan="1"
-                                                                aria-label="Parent Name: activate to sort column ascending"
-                                                                style="width: 97.8281px;">Commission</th>
-                                                            <th class="sorting" tabindex="0"
-                                                                aria-controls="DataTables_Table_0" rowspan="1"
-                                                                colspan="1"
-                                                                aria-label="Parent Name: activate to sort column ascending"
-                                                                style="width: 97.8281px;">GST</th>
+                                                                aria-label="Name: activate to sort column ascending"
+                                                                style="width: 163.406px;">WhatsApp</th>
                                                             <th class="text-end sorting" tabindex="0"
                                                                 aria-controls="DataTables_Table_0" rowspan="1"
                                                                 colspan="1"
                                                                 aria-label="Action: activate to sort column ascending"
-                                                                style="width: 70.2344px;">Action</th>
+                                                                style="width: 74.7031px;">Action</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        {% for prod in products %}
+                                                        {% for man in managers %}
                                                         <tr role="row" class="odd">
-                                                            <td class="sorting_1">{{ prod['id'] }}</td>
-                                                           
-                                                            <td>{{ prod['brand'] }}</td>
-                                                            <td>{{ prod['name'] }}</td>
-                                                            <td><div class="form-group">
-                                               
-                                                                <input required type="text" name="quantity" value="0" placeholder="Enter the quantity" class="form-control">
-                                                            </div></td>
-                                                            <td>{{ prod['commission'] }}</td>
-                                                            <td>{{ prod['gst'] }}</td>
+                                                            <td class="sorting_1">{{ man['userID'] }}</td>
+                                                            <td>{{ man['firstname'] + " " + man['lastname']}}</td>
+                                                            <td>{{ man['defaultProfile'] }}</td>
+                                                            <td>{{ man['email'] }}</td>
+                                                            <td>{{ man['whatsapp'] }}</td>
                                                             <td class="text-end">
                                                                 <div class="actions">
-                                                                    <input type="checkbox"  class="me-4s mt-3" name="products" value="{{ prod['id'] }}">
-                                                                    
+                                                                    <a href="/approveManager/{{ man['userID'] }}"
+                                                                        class="btn btn-sm bg-success-light me-2">
+                                                                        Approve
+                                                                    </a>
+                                                                    <a href="/rejectManager/{{ man['userID'] }}"
+                                                                        class="btn btn-sm bg-success-light me-2">
+                                                                        Reject
+                                                                    </a>
                                                                 </div>
                                                             </td>
-                                                            <div class="form-group">
-                                               
-                                                                <input type="text" name="campId" value="{{ campID }}" class="form-control" hidden>
-                                                            </div>
                                                         </tr>
                                                         {% endfor %}
-                                                        
-                                                        
                                                     </tbody>
                                                 </table>
                                             </div>
@@ -256,7 +243,7 @@
                                                 <div class="dataTables_info" id="DataTables_Table_0_info" role="status"
                                                     aria-live="polite">Showing 1 to 10 of 11 entries</div>
                                             </div>
-                                            <div class="col-sm-12 col-md-5">
+                                            <div class="col-sm-12 col-md-7">
                                                 <div class="dataTables_paginate paging_simple_numbers"
                                                     id="DataTables_Table_0_paginate">
                                                     <ul class="pagination">
@@ -277,14 +264,8 @@
                                                     </ul>
                                                 </div>
                                             </div>
-                                            <div class="col-sm-12 col-md-2">
-                                             <div class="my-3 text-end">
-                                                <input type="submit" class="btn btn-info" value="Save">
-                                             </div>
-                                            </div>
                                         </div>
                                     </div>
-                                </form>
                                 </div>
                             </div>
                         </div>

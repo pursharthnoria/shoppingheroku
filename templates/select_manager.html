@@ -87,7 +87,7 @@
                             <ul>
                                 <li><a href="/viewManagers">Managers List</a></li>
                                 <li><a href="/addManager">Manager Add</a></li>
-
+                                <li><a href="/managerApplications">Manager  Applications</a></li>
                             </ul>
                         </li>
                         <li class="submenu">
@@ -208,12 +208,12 @@
                                                                 colspan="1"
                                                                 aria-label="Parent Name: activate to sort column ascending"
                                                                 style="width: 97.8281px;">Whatspp</th>
-                                                            <!-- <th class="sorting" tabindex="0"
+                                                            <th class="sorting" tabindex="0"
                                                                 aria-controls="DataTables_Table_0" rowspan="1"
                                                                 colspan="1"
                                                                 aria-label="Parent Name: activate to sort column ascending"
-                                                                style="width: 97.8281px;">Quantity</th>
-                                                            <th class="sorting" tabindex="0"
+                                                                style="width: 97.8281px;">Slots</th>
+                                                            <!-- <th class="sorting" tabindex="0"
                                                                 aria-controls="DataTables_Table_0" rowspan="1"
                                                                 colspan="1"
                                                                 aria-label="Parent Name: activate to sort column ascending"
@@ -234,14 +234,10 @@
                                                             <td>{{ manager['lastname'] }}</td>
                                                             <td>{{ manager['email'] }}</td>
                                                             <td>{{ manager['whatsapp'] }}</td>
-                                                            <!-- <td><div class="form-group">
-                                               
-                                                                <input required type="text" name="quantity" value="0" placeholder="Enter the quantity" class="form-control">
-                                                            </div></td>
                                                             <td><div class="form-group">
                                                
-                                                                <input required type="text" name="amount" value="0" placeholder="Enter the amount per piece" class="form-control">
-                                                            </div></td> -->
+                                                                <input required type="text" name="slots" value="0" placeholder="Enter the slots" class="form-control">
+                                                            </div></td>
                                                             <td class="text-end">
                                                                 <div class="actions">
                                                                     <input type="checkbox"  class="me-4s mt-3" name="managers" value="{{ manager['userID']+ ' ' +manager['firstname']+' '+manager['lastname'] }}">

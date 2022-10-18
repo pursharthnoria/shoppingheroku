@@ -33,6 +33,7 @@ def login():
             return redirect("/adminDashboard")
         elif role == "buyer":
             session["userid"] = details["userid"]
+            session["email"] = details['email']
             session["firstName"] = details["firstName"]
             session["lastName"] = details["lastName"]
             session["defaultProfile"] = details["defaultProfile"]
@@ -46,8 +47,10 @@ def login():
             session["accountNumber"] = details["accountNumber"]
             session["ifsc"] = details["ifsc"]
             session["password"] = details["password"] 
-            session["verified"] = details['verified']
-            if session['verified'] == "yes":
+            session["emailVerified"] = details['emailVerified']
+            session["profilePic"] = details['profilePic']
+            session["whatsappVerified"] = details['whatsappVerified']
+            if session['emailVerified'] == "yes" or session['emailVerified']=="yes":
                 return redirect("/buyerDashboard")
             else:
                 otp = db.generateOTP()
@@ -81,16 +84,85 @@ def login():
             return redirect("/sellerDashboard")
 
 
-@app.route('/sellerDashboard')
-def sellerDashboard():
-    if session.get("userid"):
-        return render_template("seller_dashboard.html",name = session['name'])
+@app.route("/register", methods=['POST'])
+def register():
+    firstName = request.form.get("first_name")
+    lastName = request.form.get("last_name")
+    profile = request.form.get("profile")
+    password = request.form.get("password")
+    email = request.form.get("email",default="No email input")
+    telegram = request.form.get("telegram",default="None")
+    whatsapp = request.form.get("whatsapp")
+    alternate = request.form.get("alternate",default="None")
+    paytm = request.form.get('paytm')
+    gpay = request.form.get("gpay",default="None")
+    upi = request.form.get("upi",default="None")
+    account = request.form.get("account",default="None")
+    ifsc = request.form.get("ifsc",default="None")
+    userid = db.generateBuyerId()
+    try:
+        db.insertIntoBuyer(userid, firstName, lastName, profile, email, password, whatsapp, telegramID = telegram, alternateNumber = alternate, paytmNumber=paytm, gpayNumber=gpay, UPI=upi, bankname="None", accountNumber=account, ifsc=ifsc,emailVerified="no")
+        session["userid"] = userid
+        session["firstName"] = firstName
+        session["lastName"] = lastName
+        session["defaultProfile"] = profile
+        session["telegramID"] = telegram
+        session['email'] = email
+        session["whatsappNumber"] = whatsapp
+        session["alternateNumber"] = alternate
+        session["paytmNumber"] = paytm
+        session["gpayNumber"] = gpay
+        session["UPI"] = upi
+        session["bankname"] = "None"
+        session["accountNumber"] = account
+        session["ifsc"] = ifsc
+        session["password"] = password
+        otp = db.generateOTP()
+        db.sendOTPemail(email,otp)
+        session['otp'] = otp
+        return redirect("/pleaseVerify")
+    except Exception as e:
+        print(e)
+        return redirect("/")
 
 
 @app.route('/buyerDashboard')
 def buyerDashboard():
     if session.get("userid"):
         return render_template("user_dashboard.html",name = session['firstName'])
+
+
+@app.route('/applyForManager')
+def applyForManager():
+    if session.get("userid"):
+        return render_template("applyForManager.html",name = session['firstName'])
+
+
+@app.route('/applyManager',methods=['POST'])
+def applyManager():
+    if session.get("userid"):
+        pancard = request.form.get("pan card")
+        adharcard = request.form.get("adhar card")
+        db.insertIntoManager(session.get("userid"), 
+        session.get("firstName"), 
+        session.get("lastName"), 
+        session.get("defaultProfile"), 
+        session.get("email"),
+        session.get("password"), 
+        session.get("whatsappNumber"), 
+        adharcard, 
+        pancard, 
+        "True", 
+        telegramID = session.get("telegramID"), 
+        alternateNumber = session.get("alternateNumber"), 
+        paytmNumber=session.get("paytmNumber"), 
+        gpayNumber=session.get("gpayNumber"), 
+        UPI=session.get("UPI"), 
+        bankname=session.get("bankname"), 
+        accountNumber=session.get("accountNumber"), 
+        ifsc=session.get("ifsc"),
+        approved="no")
+        return render_template("applyForManager.html",name = session['firstName'])
 
 
 @app.route('/activeCampaigns')
@@ -112,6 +184,33 @@ def campaignForm(campID):
         for all in alls:
             manNames.append((all['manager'],db.getManagerName(all['manager'])))
         return render_template("form.html",name = session['firstName'],manNames = manNames,brand = brand, today = date.today(),products = prods,campID = campID)
+
+
+
+@app.route("/managerApplications")
+def managerApplications():
+    if session.get("name"):
+        managersApps = db.getNonApprovedApps()
+        return render_template("managerApplications.html",managers=managersApps)
+
+
+@app.route("/approveManager/<userid>")
+def approveManager(userid):
+    if session.get("name"):
+        db.removeUser(userid)
+        db.updateManagerApproval(userid)
+        return render_template("managerApplications.html")
+
+@app.route("/rejectManager/<userid>")
+def rejectManager(userid):
+    if session.get("name"):
+        db.removeManager(userid)
+        return render_template("managerApplications.html")
+
+@app.route('/sellerDashboard')
+def sellerDashboard():
+    if session.get("userid"):
+        return render_template("seller_dashboard.html",name = session['name'])
 
 
 @app.route('/adminDashboard')
@@ -186,7 +285,7 @@ def viewCampaigns():
 @app.route("/view_manager/<campaignID>")
 def viewAllMan(campaignID):
     if session.get("name"):
-        allocations = db.getAllocations(campaignID)
+        allocations = db.getManagerAllocations(campaignID)
         return render_template("view_manager.html",allocations=allocations)
 
 
@@ -247,7 +346,7 @@ def addManagerButton():
         adharcard = request.form.get("adhar")
         pan = request.form.get("pan")
         try:
-            db.insertIntoManagerChecker(userid, firstName, lastName, profile, email, password, whatsapp, adharcard, pan, "True", "Manager", telegramID = telegram, alternateNumber = alternate, paytmNumber=paytm, gpayNumber=gpay, UPI=upi, bankname="None", accountNumber=account, ifsc=ifsc)
+            db.insertIntoManager(userid, firstName, lastName, profile, email, password, whatsapp, adharcard, pan, "True", telegramID = telegram, alternateNumber = alternate, paytmNumber=paytm, gpayNumber=gpay, UPI=upi, bankname="None", accountNumber=account, ifsc=ifsc)
         except Exception as e:
             print(e)
         return redirect("/viewManagers")
@@ -268,9 +367,10 @@ def addSellerButton():
         whatsapp = request.form.get("whatsapp")
         contact = request.form.get("contact")
         cashback = request.form.get("cashback")
+        password = request.form.get("password")
         userid = db.generateSellerUserID()
         try:
-            db.insertIntoSeller(userid, name, profile, email, whatsapp, contact, cashback)
+            db.insertIntoSeller(userid, name, profile, email, whatsapp, contact, cashback, password)
         except Exception as e:
             print(e)
         return redirect("/viewSellers")
@@ -349,19 +449,14 @@ def addCampaign():
 @app.route("/addCampaignButton",methods=["POST"])
 def addCampaignButton():
     if session.get("name"):
+        name = request.form.get("name")
         brandname = request.form.get("brandname")
         startdate = request.form.get("startdate")
         enddate = request.form.get("enddate")
-        ss1 = request.form.get("ss1")
-        ss2 = request.form.get("ss2")
-        link = request.form.get("link")
-        returnExp = request.form.get("returnExp")
-        orderDel = request.form.get("orderDel")
         campID= db.generateCampId()
         brandId = db.getBrandID(brandname)
         try:
-            db.insertIntoCampaign(campID, brandId, startdate, enddate)
-            db.insertIntoFormDetails(campID,ss1,ss2,link,returnExp,orderDel)
+            db.insertIntoCampaign(campID, name, brandId, startdate, enddate)
         except Exception as e:
             print(e)
         return redirect("/viewCampaigns")
@@ -377,48 +472,6 @@ def forgotpassword():
     return render_template("forgot.html")
 
 
-@app.route("/register", methods=['POST'])
-def register():
-    firstName = request.form.get("first_name")
-    lastName = request.form.get("last_name")
-    profile = request.form.get("profile")
-    password = request.form.get("password")
-    email = request.form.get("email",default="No email input")
-    telegram = request.form.get("telegram",default="None")
-    whatsapp = request.form.get("whatsapp")
-    alternate = request.form.get("alternate",default="None")
-    paytm = request.form.get('paytm')
-    gpay = request.form.get("gpay",default="None")
-    upi = request.form.get("upi",default="None")
-    account = request.form.get("account",default="None")
-    ifsc = request.form.get("ifsc",default="None")
-    userid = db.generateBuyerId()
-    try:
-        db.insertIntoBuyer(userid, firstName, lastName, profile, email, password, whatsapp, telegramID = telegram, alternateNumber = alternate, paytmNumber=paytm, gpayNumber=gpay, UPI=upi, bankname="None", accountNumber=account, ifsc=ifsc,verified="no")
-        session["userid"] = userid
-        session["firstName"] = firstName
-        session["lastName"] = lastName
-        session["defaultProfile"] = profile
-        session["telegramID"] = telegram
-        session['email'] = email
-        session["whatsappNumber"] = whatsapp
-        session["alternateNumber"] = alternate
-        session["paytmNumber"] = paytm
-        session["gpayNumber"] = gpay
-        session["UPI"] = upi
-        session["bankname"] = "None"
-        session["accountNumber"] = account
-        session["ifsc"] = ifsc
-        session["password"] = password
-        otp = db.generateOTP()
-        db.sendOTPemail(email,otp)
-        session['otp'] = otp
-        return redirect("/pleaseVerify")
-    except Exception as e:
-        print(e)
-        return redirect("/")
-
-
 @app.route("/pleaseVerify")
 def verify():
     if session.get("userid"):
@@ -430,7 +483,7 @@ def verifyOTP():
     if session.get("userid"):
         otp = request.form.get("otp")
         if otp == session.get("otp"):
-            db.updateBuyerVerification(session.get("userid"))
+            db.updateBuyerGmailVerification(session.get("userid"))
             return redirect("/buyerDashboard")
         else:
             return redirect("/pleaseVerify")
@@ -456,17 +509,17 @@ def allocateProducts():
     if session.get("name"):
         products = request.form.getlist("products")
         quantities = request.form.getlist("quantity")
-        amounts = request.form.getlist("amount")
+        # amounts = request.form.getlist("amount")
         campId = request.form.get("campId")
         prodList = []
         for i in range(len(products)):
             temp = []
             temp.append(products[i])
             temp.append(quantities[i])
-            temp.append(amounts[i])
+            # temp.append(amounts[i])
             prodList.append(temp)
         for prod in prodList:
-            db.insertIntoAllocateProducts(campId, prod[0], prod[1], prod[2])
+            db.insertIntoAllocateProducts(campId, prod[0], prod[1])
         return redirect("/viewCampaigns")
 
 
@@ -474,13 +527,17 @@ def allocateProducts():
 def allocate():
     if session.get("name"):
         managers = request.form.getlist("managers")
+        slots = request.form.getlist("slots")
         print(managers)
         campId = request.form.get("campId")
+        finalList = []
         for i in range(len(managers)):
             managers[i] = managers[i].split(" ")
+            finalList.append((managers[i][0],slots[i]))
         print(managers)
-        for man in managers:
-            db.insertIntoAllocate(campId,man[0])
+        print(finalList)
+        for man in finalList:
+            db.insertIntoAllocateManagers(campId,man[0],man[1])
         return redirect("/viewCampaigns")
 
 
