@@ -172,18 +172,18 @@ def activeCampaigns():
         return render_template("activeCampaigns.html",name = session['firstName'],camps=camps)
 
 
-@app.route('/campaignForm/<campID>')
-def campaignForm(campID):
-    if session.get("userid"):
-        alls = db.getAllById(campID)
-        camps = db.getCampById(campID)
-        prods = db.getProdsByCampId(campID)
-        print(prods)
-        brand = db.getBrandName(camps[0]['brand'])
-        manNames = []
-        for all in alls:
-            manNames.append((all['manager'],db.getManagerName(all['manager'])))
-        return render_template("form.html",name = session['firstName'],manNames = manNames,brand = brand, today = date.today(),products = prods,campID = campID)
+# @app.route('/campaignForm/<campID>')
+# def campaignForm(campID):
+#     if session.get("userid"):
+#         alls = db.getAllById(campID)
+#         camps = db.getCampById(campID)
+#         prods = db.getProdsByCampId(campID)
+#         print(prods)
+#         brand = db.getBrandName(camps[0]['brand'])
+#         manNames = []
+#         for all in alls:
+#             manNames.append((all['manager'],db.getManagerName(all['manager'])))
+#         return render_template("form.html",name = session['firstName'],manNames = manNames,brand = brand, today = date.today(),products = prods,campID = campID)
 
 
 
@@ -294,6 +294,36 @@ def view_products(campaignID):
     if session.get("name"):
         allocations = db.getAllocateProducts(campaignID)
         return render_template("view_products.html",allocations=allocations)
+
+
+@app.route("/firstForm")
+def firstForm():
+    if session.get("userid"):
+        activeCamps = db.getActiveCampaigns()
+        print(activeCamps)
+        return render_template("firstForm.html",camps=activeCamps)
+
+
+@app.route("/parttwo",methods=['POST'])
+def parttwo():
+    if session.get("userid"):
+        campID = request.form.get("camp")
+        campDetails = db.getCampById(campID)
+        products = db.getAllocateProductsByCampId(campID)
+        managers = db.getAllocatedManagers(campID)
+        print(managers)
+        mans = []
+        prods = []
+        for val in products:
+            product = db.getProductById(val['productID'])
+            prods.append((val['productID'],product[0]['name']))
+        print(prods)
+        for val in managers:
+            man = db.getManById(val['managerID'])
+            print(man)
+            mans.append((val['managerID'],man[0]['firstname'] + " " + man[0]['lastname']))
+        print(mans)
+        return render_template("firstFormPartTwo.html",campID=campID,campDetails=campDetails,prods = prods,mans=mans,today = date.today())
 
 
 @app.route("/logout")
@@ -544,19 +574,17 @@ def allocate():
 @app.route("/submitOrder",methods=["POST"])
 def submitOrder():
     if session.get("userid"):
+        campID = request.form.get("campID")
+        manID = request.form.get("manager")
         affiliate_name = request.form.get("affiliate_name")
         brand = request.form.get("brand")
-        product = request.form.get("product").split(" ")
-        productId = product[0]
-        productName = product[1]
-        manager = request.form.get("manager")
-        managers = manager.split(",")
-        for i in range(len(managers)):
-            if "(" in managers[i]:
-                managers[i] = managers[i].replace("(","")
-            if ")" in managers[i]:
-                managers[i] = managers[i].replace(")","")
-        managerid = managers[0]
+        productID = request.form.get("product")
+        # for i in range(len(managers)):
+        #     if "(" in managers[i]:
+        #         managers[i] = managers[i].replace("(","")
+        #     if ")" in managers[i]:
+        #         managers[i] = managers[i].replace(")","")
+        # managerid = managers[0]
         # print(manager)
         order_date = request.form.get("order_date")
         order_id = request.form.get("order_id")
@@ -568,27 +596,10 @@ def submitOrder():
         uid = session.get("userid")
         campid = request.form.get("campID")
         try:
-            db.insertIntoOrder(uid,campid,ordID,affiliate_name,productId,managerid,order_date,order_id,order_screenshot,order_amount,refund_amount,brandID)
+            db.insertIntoOrder(uid,campid,ordID,affiliate_name,productID,manID,order_date,order_id,order_screenshot,order_amount,refund_amount,brandID)
         except Exception as e:
             print(e)
-        formDetails = db.getFormDetailsByCampId(campid)
-        ss1 = "no"
-        ss2 = "no"
-        link = "no"
-        returnExp = "no"
-        orderDel = "no"
-        for val in formDetails:
-            if val['ss1'] == "yes":
-                ss1 = "yes"
-            if val['ss2'] == "yes":
-                ss2 = "yes"
-            if val['link'] == "yes":
-                link = "yes"
-            if val['returnExp'] == "yes":
-                returnExp = "yes"
-            if val['orderDel'] == "yes":
-                orderDel="yes"
-        return render_template("form2.html",ss1 = ss1, ss2 = ss2, link = link, returnExp = returnExp, orderDel = orderDel,orderID= ordID,campid=campid)
+        return redirect("/buyerDashboard")
 
 @app.route("/submitOrderDetails",methods=["POST"])
 def submitOrderDetails():

@@ -3,6 +3,8 @@ import psycopg2
 from email.message import EmailMessage
 import ssl
 import smtplib
+from datetime import date
+
 
 class database:
     def __init__(self):
@@ -28,7 +30,7 @@ class database:
         cur.execute("CREATE TABLE IF NOT EXISTS allocateProductsToCamp (campaignID text, productID text, quantity text)")
         cur.execute("CREATE TABLE IF NOT EXISTS allocateManagersToCamp (campaignID text, managerID text, slots text)")
         # cur.execute("CREATE TABLE IF NOT EXISTS formDetails (campaignID text, ss1 text, ss2 text, link text, returnExp text, orderDel text)")
-        # cur.execute("CREATE TABLE IF NOT EXISTS Orders (userid text, campaignID text, orderID text, name text, product text, manager text, orderdate DATE, order_ID text, orderss BYTEA, orderAmount text, refund text,brand text)")
+        cur.execute("CREATE TABLE IF NOT EXISTS Orders (userid text, campaignID text, orderID text, name text, product text, manager text, orderdate DATE, order_ID text, orderss BYTEA, orderAmount text, refund text,brand text)")
         # cur.execute("CREATE TABLE IF NOT EXISTS additionalOrderInfo (userid text, campaignID text, orderID text, ss1 BYTEA, ss2 BYTEA, link TEXT, returnExp BYTEA, orderDel BYTEA)")
         self.con.commit()
         self.con.close()
@@ -49,7 +51,24 @@ class database:
             temp['platform'] = user[3]
             d.append(temp)
         return d
-    
+
+    def getAllocateProductsByCampId(self,campID):
+        self.con = psycopg2.connect(host=self.host,user=self.user,password=self.password,database=self.database,port=self.port)
+        cur = self.con.cursor()
+        cur.execute("SELECT * FROM allocateProductsToCamp where campaignID=%s",(campID,))
+        users = cur.fetchall()
+        self.con.commit()
+        self.con.close()
+        print(users)
+        d = []
+        for user in users:
+            temp = {}
+            temp['id'] = user[0]
+            temp['productID'] = user[1]
+            temp['quantity'] = user[2]
+            d.append(temp)
+        return d
+
     def getFormByUserId(self,userID):
         self.con = psycopg2.connect(host=self.host,user=self.user,password=self.password,database=self.database,port=self.port)
         cur = self.con.cursor()
@@ -88,6 +107,26 @@ class database:
             d.append(temp)
         return d
     
+    def getProductById(self,id):
+        self.con = psycopg2.connect(host=self.host,user=self.user,password=self.password,database=self.database,port=self.port)
+        cur = self.con.cursor()
+        cur.execute("SELECT * FROM Product where productID=%s",(id,))
+        users = cur.fetchall()
+        self.con.commit()
+        self.con.close()
+        d = []
+        for user in users:
+            temp = {}
+            temp['id'] = user[1]
+            temp['brand'] = self.getBrandName(user[0])
+            temp['name'] = user[2]
+            temp['quantity'] = user[3]
+            temp['amount'] = user[4]
+            temp['commission'] = user[5]
+            temp['gst'] = user[6]
+            d.append(temp)
+        return d
+
     def getProductByBrand(self,brandID):
         self.con = psycopg2.connect(host=self.host,user=self.user,password=self.password,database=self.database,port=self.port)
         cur = self.con.cursor()
@@ -210,16 +249,36 @@ class database:
             d.append(temp)
         return d
 
-    def getAllById(self,campID):
+    def getActiveCampaigns(self):
+        currentDate = date.today()
         self.con = psycopg2.connect(host=self.host,user=self.user,password=self.password,database=self.database,port=self.port)
         cur = self.con.cursor()
-        cur.execute("SELECT * FROM Allocate where campaignID=%s",(campID,))
+        # cur.execute("SELECT * FROM Campaign where startdate<=%s and enddate>=%s",(currentDate,currentDate))
+        cur.execute("SELECT * FROM Campaign")
+        users = cur.fetchall()
+        self.con.commit()
+        self.con.close()
+        d = []
+        for user in users:
+            temp = {}
+            temp['campaignID'] = user[0]
+            temp['name'] = user[1]
+            temp['brandname'] = self.getBrandName(user[2])
+            temp['start_date'] = user[3]
+            temp['end_date'] = user[4]
+            d.append(temp)
+        return d
+
+    def getAllocatedManagers(self,campID):
+        self.con = psycopg2.connect(host=self.host,user=self.user,password=self.password,database=self.database,port=self.port)
+        cur = self.con.cursor()
+        cur.execute("SELECT * FROM allocateManagersToCamp where campaignID=%s",(campID,))
         users = cur.fetchall()
         d = []
         for user in users:
             temp = {}
             temp['campaignID'] = user[0]
-            temp['manager'] = user[1]
+            temp['managerID'] = user[1]
             d.append(temp)
         self.con.commit()
         self.con.close()
@@ -285,6 +344,24 @@ class database:
         self.con = psycopg2.connect(host=self.host,user=self.user,password=self.password,database=self.database,port=self.port)
         cur = self.con.cursor()
         cur.execute("SELECT * FROM Manager where approved=%s",("yes",))
+        users = cur.fetchall()
+        d = []
+        for user in users:
+            temp = {}
+            temp['userID'] = user[0]
+            temp['firstname'] = user[1]
+            temp['lastname'] = user[2]
+            temp['email'] = user[4]
+            temp['whatsapp'] = user[6]
+            d.append(temp)
+        self.con.commit()
+        self.con.close()
+        return d
+    
+    def getManById(self,manID):
+        self.con = psycopg2.connect(host=self.host,user=self.user,password=self.password,database=self.database,port=self.port)
+        cur = self.con.cursor()
+        cur.execute("SELECT * FROM Manager where userid=%s",(manID,))
         users = cur.fetchall()
         d = []
         for user in users:

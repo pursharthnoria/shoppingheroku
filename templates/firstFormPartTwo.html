@@ -66,19 +66,23 @@
                             <span>Main Menu</span>
                         </li>
                         <li class=" ">
-                            <a href="/buyerDashboard"><i class="fas fa-clipboard"></i> <span> Dashboard</span></a>
-                        </li>
-                        <li class=" active">
-                            <a href="/activeCampaigns"><i class="fas fa-clipboard"></i> <span> Campaigns</span></a>
+                            <a href="/buyerDashboard"><i class="fas fa-clipboard"></i> <span>Dashboard</span></a>
                         </li>
                         <li class=" ">
+                            <a href="/activeCampaigns"><i class="fas fa-clipboard"></i> <span>Campaigns</span></a>
+                        </li>
+                        <li class=" ">
+                            <a href="/firstForm"><i class="fas fa-clipboard"></i> <span>Place order</span></a>
+                        </li>
+                        <li class=" active">
                             <a href="/submittedForms"><i class="fas fa-clipboard"></i> <span>Submitted Forms</span></a>
+                        </li>
+                        <li class=" ">
+                            <a href="/applyForManager"><i class="fas fa-clipboard"></i> <span>Apply for manager</span></a>
                         </li>
                         <li class=" ">
                             <a href="/"><i class="fas fa-clipboard"></i> <span> Logout</span> </a>
                         </li>
-                       
-
                     </ul>
                 </div>
             </div>
@@ -107,7 +111,30 @@
                                 <form method="POST" action="/submitOrder">
                                     <div class="row">
                                         <div class="col-12">
-                                            <h5 class="form-title"><span> {{ brand }} Campaign:</span></h5>
+                                            <h5 class="form-title"><span>Campaign form:</span></h5>
+                                        </div>
+                                        <div class="col-12 col-sm-6">
+                                            <div class="form-group">
+                                                <input disabled type="text"
+                                                name="camp" value="{{ campID }}" class="form-control">
+                                            </div>
+                                        </div>
+                                        <div class="col-12 col-sm-6">
+                                            <div class="form-group">
+                                                <input hidden type="text"
+                                                name="campID" value="{{ campID }}" class="form-control">
+                                            </div>
+                                        </div>
+                                        <div class="col-12 col-sm-6">
+                                            <div class="form-group">
+                                                <label style="color:black ;">Campaign Manager <span style="color: red ;">*</span></label>
+                                               <select name="manager" class="form-control" id="">
+                                                <option disabled="" selected="">-selected-</option>
+                                                {% for man in mans %}
+                                                    <option value="{{ man[0] }}">{{ man[1] }}</option>
+                                                {% endfor %}
+                                               </select>
+                                            </div>
                                         </div>
                                         <div class="col-12 col-sm-6">
                                             <div class="form-group">
@@ -118,8 +145,15 @@
                                         </div>
                                         <div class="col-12 col-sm-6">
                                             <div class="form-group">
+                                                <label style="color:black ;">Brand<span style="color: red ;">*</span></label>
+                                                <input disabled type="text"
+                                                name="brandname" value="{{ campDetails[brand] }}" class="form-control">
+                                            </div>
+                                        </div>
+                                        <div class="col-12 col-sm-6">
+                                            <div class="form-group">
                                                 <input hidden type="text"
-                                                name="brand" value="{{ brand }}" class="form-control">
+                                                name="brand" value="{{ campDetails[brand] }}" class="form-control">
                                             </div>
                                         </div>
                                         <div class="col-12 col-sm-6">
@@ -127,21 +161,17 @@
                                                 <label style="color:black ;">Product Name <span style="color: red ;">*</span></label>
                                                 <select name="product" class="form-control" id="">
                                                     <option selected="">-selected-</option>
-                                                    {% for product in products %}
-                                                        <option value="{{ product[0] + ' ' + product[1] }}">{{ product[1] }}</option>
+                                                    {% for prod in prods %}
+                                                        <option value="{{ prod[0] }}">{{ prod[1] }}</option>
                                                     {% endfor %}
                                                    </select>
                                             </div>
                                         </div>
                                         <div class="col-12 col-sm-6">
                                             <div class="form-group">
-                                                <label style="color:black ;">Campaign Manager <span style="color: red ;">*</span></label>
-                                               <select name="manager" class="form-control" id="">
-                                                <option disabled="" selected="">-selected-</option>
-                                                {% for manager in manNames %}
-                                                    <option value="{{ manager }}">{{ manager[1] }}</option>
-                                                {% endfor %}
-                                               </select>
+                                                <label style="color:black ;">Order Date<span style="color: red ;">*</span></label>
+                                                <input disabled  type="date" value="{{ today }}"
+                                                    class="form-control">
                                             </div>
                                         </div>
                                         <div class="col-12 col-sm-6">
