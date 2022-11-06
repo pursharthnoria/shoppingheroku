@@ -625,6 +625,22 @@ def submittedForms():
             forms[i]['username'] = db.getUserByUserId(forms[i]['userid'])
         return render_template("submitted_forms.html",forms=forms)
 
+@app.route("/rejectedUserForms")
+def rejectedUserForms():
+    if session.get("userid"):
+        forms = db.getRejectedUserOrders(session.get("userid"))
+        for i in range(len(forms)):
+            forms[i]['username'] = db.getUserByUserId(forms[i]['userid'])
+        return render_template("rejectedUserForms.html",forms=forms)
+
+@app.route("/approvedUserForms")
+def approvedUserForms():
+    if session.get("userid"):
+        forms = db.getApprovedUserOrders(session.get("userid"))
+        for i in range(len(forms)):
+            forms[i]['username'] = db.getUserByUserId(forms[i]['userid'])
+        return render_template("approvedUserFroms.html",forms=forms)
+
 @app.route("/submittedUserFroms")
 def submittedUserFroms():
     if session.get("name"):
