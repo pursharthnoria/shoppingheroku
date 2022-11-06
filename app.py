@@ -596,7 +596,7 @@ def submitOrder():
         uid = session.get("userid")
         campid = request.form.get("campID")
         try:
-            db.insertIntoOrder(uid,campid,ordID,affiliate_name,productID,manID,order_date,order_id,order_screenshot,order_amount,refund_amount,brandID)
+            db.insertIntoOrder(uid,campid,ordID,affiliate_name,productID,manID,order_date,order_id,order_screenshot,order_amount,refund_amount,brandID,"Pending")
         except Exception as e:
             print(e)
         return redirect("/buyerDashboard")
@@ -611,7 +611,7 @@ def submitOrderDetails():
         orderDel = request.form.get("orderDel",default=None)
         ordID = request.form.get("ordID",default=None)
         print(ordID)
-        campid = request.form.get("campid",default=None)
+        campid = request.form.get("campid",default=None )
         print(campid)
         db.insertIntoAdditionalOrderInfo(session.get('userid'),campid,ordID,ss1,ss2,link,returnExp,orderDel)
         return redirect("/buyerDashboard")
@@ -621,20 +621,9 @@ def submitOrderDetails():
 def submittedForms():
     if session.get("userid"):
         forms = db.getFormByUserId(session.get("userid"))
-        formData = []
-        for form in forms:
-            d = {}
-            d['campID'] = form[1]
-            d['prodcut'] = db.getProdNameById(form[4])
-            manID = form[5].replace("'","")
-            d['manager'] = db.getManagerName(manID)
-            d['orderdate'] = form[6]
-            d['orderID'] = form[7]
-            d['orderAmount'] = form[9]
-            d['refund'] = form[10]
-            d['brand'] = db.getBrandName(form[11])
-            formData.append(d)
-        return render_template("submitted_forms.html",forms=formData)
+        for i in range(len(forms)):
+            forms[i]['username'] = db.getUserByUserId(forms[i]['userid'])
+        return render_template("submitted_forms.html",forms=forms)
 
 @app.route("/submittedUserFroms")
 def submittedUserFroms():
@@ -643,6 +632,34 @@ def submittedUserFroms():
         for i in range(len(forms)):
             forms[i]['username'] = db.getUserByUserId(forms[i]['userid'])
         return render_template("submittedUserForms.html",forms=forms)
+
+@app.route("/approvedForms")
+def approvedForms():
+    if session.get("name"):
+        forms = db.getApprovedOrders()
+        for i in range(len(forms)):
+            forms[i]['username'] = db.getUserByUserId(forms[i]['userid'])
+        return render_template("approvedForms.html",forms=forms)
+
+@app.route("/rejectedForms")
+def rejectedForms():
+    if session.get("name"):
+        forms = db.getRejectedOrders()
+        for i in range(len(forms)):
+            forms[i]['username'] = db.getUserByUserId(forms[i]['userid'])
+        return render_template("rejectedForms.html",forms=forms)
+
+@app.route("/approveOrderAdmin/<userid>/<campaignID>")
+def approveOrderAdmin(userid,campaignID):
+    if session.get("name"):
+        forms = db.approveOrderAdmin(userid,campaignID)
+        return redirect("/submittedUserFroms")
+
+@app.route("/rejectOrderAdmin/<userid>/<campaignID>")
+def rejectOrderAdmin(userid,campaignID):
+    if session.get("name"):
+        forms = db.rejectOrderAdmin(userid,campaignID)
+        return redirect("/submittedUserFroms")
 
 if __name__ == '__main__':
   

@@ -9,7 +9,7 @@
     <link rel="shortcut icon" href="{{ url_for('static', filename='assets/img/favicon.png') }}">
 
     <link rel="stylesheet"
-        href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,500;0,600;0,700;1,400&display=swap') }}">
+        href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,500;0,600;0,700;1,400&display=swap">
 
     <link rel="stylesheet" href="{{ url_for('static', filename='assets/plugins/bootstrap/css/bootstrap.min.css') }}">
 
@@ -22,6 +22,7 @@
 <body>
 
     <div class="main-wrapper">
+
         <div class="header">
 
             <div class="header-left">
@@ -63,9 +64,12 @@
                         <li class="menu-title">
                             <span>Main Menu</span>
                         </li>
-                        <li class=" active">
+                        <li class=" ">
                             <a href="/adminDashboard"><i class="fas fa-clipboard"></i> <span> Dashboard</span>
                         </li>
+                        <!-- <li class=" active">
+                            <a href="/submittedUserFroms"><i class="fas fa-clipboard"></i> <span>User submitted Forms</span>
+                        </li> -->
                         <li class="submenu">
                             <a href="#"><i class="fas fa-chalkboard-teacher"></i> <span>User submitted Forms</span> <span
                                     class="menu-arrow"></span></a>
@@ -93,7 +97,7 @@
                             <ul>
                                 <li><a href="/viewManagers">Managers List</a></li>
                                 <li><a href="/addManager">Manager Add</a></li>
-                                <li><a href="/managerApplications">Manager Applications</a></li>
+                                <li><a href="/managerApplications">Manager Add</a></li>
                             </ul>
                         </li>
                         <li class="submenu">
@@ -130,10 +134,11 @@
                             <ul>
                                 <li><a href="/viewCampaigns">Camaigns List</a></li>
                                 <li><a href="/addCampaign">Campaign Add</a></li>
-                                   
+                                 
 
                             </ul>
                         </li>
+                        
                         <li>
                             <a href="/logout"><i class="fas fa-holly-berry"></i> <span>Logout</span></a>
                         </li>
@@ -153,7 +158,7 @@
                         <div class="col-sm-12">
                             <h3 class="page-title">Welcome Admin!</h3>
                             <ul class="breadcrumb">
-                                <li class="breadcrumb-item active">Brands list</li>
+                                <li class="breadcrumb-item active">Submitted forms</li>
                             </ul>
                         </div>
                     </div>
@@ -184,7 +189,7 @@
                                                 <table
                                                     class="table table-hover table-center mb-0 datatable dataTable no-footer"
                                                     id="DataTables_Table_0" role="grid"
-                                                    aria-describedby="DataTables_Table_0_info">
+                                                    aria-describedby="DataTables_Table_0_info" text-align="center">
                                                     <thead>
                                                         <tr role="row">
                                                             <th class="sorting_asc" tabindex="0"
@@ -196,48 +201,72 @@
                                                                 aria-controls="DataTables_Table_0" rowspan="1"
                                                                 colspan="1" aria-sort="ascending"
                                                                 aria-label="ID: activate to sort column descending"
-                                                                style="width: 50.5px;">Name</th>
+                                                                style="width: 50.5px;"> User Name</th>
                                                             <th class="sorting_asc" tabindex="0"
                                                                 aria-controls="DataTables_Table_0" rowspan="1"
                                                                 colspan="1" aria-sort="ascending"
                                                                 aria-label="ID: activate to sort column descending"
-                                                                style="width: 50.5px;">Default profile</th>
+                                                                style="width: 50.5px;"> Campaign ID</th>
                                                             <th class="sorting" tabindex="0"
                                                                 aria-controls="DataTables_Table_0" rowspan="1"
                                                                 colspan="1"
                                                                 aria-label="Name: activate to sort column ascending"
-                                                                style="width: 163.406px;">Email</th>
-                                                            <th class="sorting" tabindex="0"
-                                                                aria-controls="DataTables_Table_0" rowspan="1"
-                                                                colspan="1"
-                                                                aria-label="Name: activate to sort column ascending"
-                                                                style="width: 163.406px;">WhatsApp</th>
+                                                                style="width: 163.406px;">Brand</th>
+                                                        
                                                             <th class="text-end sorting" tabindex="0"
                                                                 aria-controls="DataTables_Table_0" rowspan="1"
                                                                 colspan="1"
                                                                 aria-label="Action: activate to sort column ascending"
-                                                                style="width: 74.7031px;">Action</th>
+                                                                style="width: 74.7031px;">Product</th>
+                                                            
+                                                            <th class="text-end sorting" tabindex="0"
+                                                                aria-controls="DataTables_Table_0" rowspan="1"
+                                                                colspan="1"
+                                                                aria-label="Action: activate to sort column ascending"
+                                                                style="width: 74.7031px;">Manager</th>
+                                                            <th class="text-end sorting" tabindex="0"
+                                                                aria-controls="DataTables_Table_0" rowspan="1"
+                                                                colspan="1"
+                                                                aria-label="Action: activate to sort column ascending"
+                                                                style="width: 74.7031px;">Order Date</th>
+                                                            <th class="text-end sorting" tabindex="0"
+                                                                aria-controls="DataTables_Table_0" rowspan="1"
+                                                                colspan="1"
+                                                                aria-label="Action: activate to sort column ascending"
+                                                                style="width: 74.7031px;">Order ID</th>
+                                                            <th class="text-end sorting" tabindex="0"
+                                                                aria-controls="DataTables_Table_0" rowspan="1"
+                                                                colspan="1"
+                                                                aria-label="Action: activate to sort column ascending"
+                                                                style="width: 74.7031px;">Order Amount</th>
+                                                            <th class="text-end sorting" tabindex="0"
+                                                                aria-controls="DataTables_Table_0" rowspan="1"
+                                                                colspan="1"
+                                                                aria-label="Action: activate to sort column ascending"
+                                                                style="width: 74.7031px;">Refund Amount</th>
+                                                            <th class="text-end sorting" tabindex="0"
+                                                                aria-controls="DataTables_Table_0" rowspan="1"
+                                                                colspan="1"
+                                                                aria-label="Action: activate to sort column ascending"
+                                                                style="width: 74.7031px;">Status</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        {% for man in managers %}
+                                                        {% for form in forms %}
                                                         <tr role="row" class="odd">
-                                                            <td class="sorting_1">{{ man['userID'] }}</td>
-                                                            <td>{{ man['firstname'] + " " + man['lastname']}}</td>
-                                                            <td>{{ man['defaultProfile'] }}</td>
-                                                            <td>{{ man['email'] }}</td>
-                                                            <td>{{ man['whatsapp'] }}</td>
+                                                            <td>{{ form['userid'] }}</td>
+                                                            <td>{{ form['username'] }}</td>
+                                                            <td class="sorting_1">{{ form['campaignID'] }}</td>
+                                                            <td>{{ form['brand'] }}</td>
+                                                            <td>{{ form['product'] }}</td>
+                                                            <td>{{ form['manager'] }}</td>
+                                                            <td>{{ form['orderdate'] }}</td>
+                                                            <td>{{ form['orderID'] }}</td>
+                                                            <td>{{ form['orderamount'] }}</td>
+                                                            <td>{{ form['refund'] }}</td>
+                                                         
                                                             <td class="text-end">
-                                                                <div class="actions">
-                                                                    <a href="/approveManager/{{ man['userID'] }}"
-                                                                        class="btn btn-sm bg-success-light me-2">
-                                                                        Approve
-                                                                    </a>
-                                                                    <a href="/rejectManager/{{ man['userID'] }}"
-                                                                        class="btn btn-sm bg-success-light me-2">
-                                                                        Reject
-                                                                    </a>
-                                                                </div>
+                                                                {{ form['status'] }}
                                                             </td>
                                                         </tr>
                                                         {% endfor %}

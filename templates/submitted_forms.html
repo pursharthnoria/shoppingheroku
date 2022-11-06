@@ -123,16 +123,26 @@
                                                             <option value="100">100</option>
                                                         </select> entries</label></div>
                                             </div>
-                                            <div class="col-sm-12 col-md-6"></div>
+                                          <div class="col-sm-12 col-md-6"></div>
                                         </div>
                                         <div class="row">
                                             <div class="col-sm-12">
                                                 <table
                                                     class="table table-hover table-center mb-0 datatable dataTable no-footer"
                                                     id="DataTables_Table_0" role="grid"
-                                                    aria-describedby="DataTables_Table_0_info">
+                                                    aria-describedby="DataTables_Table_0_info" text-align="center">
                                                     <thead>
                                                         <tr role="row">
+                                                            <th class="sorting_asc" tabindex="0"
+                                                                aria-controls="DataTables_Table_0" rowspan="1"
+                                                                colspan="1" aria-sort="ascending"
+                                                                aria-label="ID: activate to sort column descending"
+                                                                style="width: 50.5px;"> User ID</th>
+                                                            <th class="sorting_asc" tabindex="0"
+                                                                aria-controls="DataTables_Table_0" rowspan="1"
+                                                                colspan="1" aria-sort="ascending"
+                                                                aria-label="ID: activate to sort column descending"
+                                                                style="width: 50.5px;"> User Name</th>
                                                             <th class="sorting_asc" tabindex="0"
                                                                 aria-controls="DataTables_Table_0" rowspan="1"
                                                                 colspan="1" aria-sort="ascending"
@@ -179,32 +189,25 @@
                                                                 aria-controls="DataTables_Table_0" rowspan="1"
                                                                 colspan="1"
                                                                 aria-label="Action: activate to sort column ascending"
-                                                                style="width: 74.7031px;">Action</th>
+                                                                style="width: 74.7031px;">Status</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
                                                         {% for form in forms %}
                                                         <tr role="row" class="odd">
-                                                            <td class="sorting_1">{{ form['campID'] }}</td>
-                                                           
+                                                            <td>{{ form['userid'] }}</td>
+                                                            <td>{{ form['username'] }}</td>
+                                                            <td class="sorting_1">{{ form['campaignID'] }}</td>
                                                             <td>{{ form['brand'] }}</td>
-                                                            <td>{{ form['prodcut'] }}</td>
+                                                            <td>{{ form['product'] }}</td>
                                                             <td>{{ form['manager'] }}</td>
                                                             <td>{{ form['orderdate'] }}</td>
                                                             <td>{{ form['orderID'] }}</td>
-                                                            <td>{{ form['orderAmount'] }}</td>
+                                                            <td>{{ form['orderamount'] }}</td>
                                                             <td>{{ form['refund'] }}</td>
                                                          
                                                             <td class="text-end">
-                                                                <div class="actions">
-                                                                    <a href="#"
-                                                                        class="btn btn-sm bg-success-light me-2">
-                                                                        <i class="fas fa-pen"></i>
-                                                                    </a>
-                                                                    <a href="#" class="btn btn-sm bg-danger-light">
-                                                                        <i class="fas fa-trash"></i>
-                                                                    </a>
-                                                                </div>
+                                                                {{ form['status'] }}
                                                             </td>
                                                         </tr>
                                                         {% endfor %}

@@ -30,10 +30,78 @@ class database:
         cur.execute("CREATE TABLE IF NOT EXISTS allocateProductsToCamp (campaignID text, productID text, quantity text)")
         cur.execute("CREATE TABLE IF NOT EXISTS allocateManagersToCamp (campaignID text, managerID text, slots text)")
         # cur.execute("CREATE TABLE IF NOT EXISTS formDetails (campaignID text, ss1 text, ss2 text, link text, returnExp text, orderDel text)")
-        cur.execute("CREATE TABLE IF NOT EXISTS Orders (userid text, campaignID text, orderID text, name text, product text, manager text, orderdate DATE, order_ID text, orderss BYTEA, orderAmount text, refund text,brand text)")
+        cur.execute("CREATE TABLE IF NOT EXISTS Orders (userid text, campaignID text, orderID text, name text, product text, manager text, orderdate DATE, order_ID text, orderss BYTEA, orderAmount text, refund text,brand text, status text)")
         # cur.execute("CREATE TABLE IF NOT EXISTS additionalOrderInfo (userid text, campaignID text, orderID text, ss1 BYTEA, ss2 BYTEA, link TEXT, returnExp BYTEA, orderDel BYTEA)")
         self.con.commit()
         self.con.close()
+
+    def approveOrderAdmin(self,userid,campid):
+        self.con = psycopg2.connect(host=self.host,user=self.user,password=self.password,database=self.database,port=self.port)
+        cur = self.con.cursor()
+        cur.execute("UPDATE Orders SET status=%s where userid=%s and campaignID=%s",("approved",userid,campid))
+        self.con.commit()
+        self.con.close()
+
+    def rejectOrderAdmin(self,userid,campid):
+        self.con = psycopg2.connect(host=self.host,user=self.user,password=self.password,database=self.database,port=self.port)
+        cur = self.con.cursor()
+        cur.execute("UPDATE Orders SET status=%s where userid=%s and campaignID=%s",("rejected",userid,campid))
+        self.con.commit()
+        self.con.close()
+
+    def getApprovedOrders(self):
+        self.con = psycopg2.connect(host=self.host,user=self.user,password=self.password,database=self.database,port=self.port)
+        cur = self.con.cursor()
+        cur.execute("SELECT * FROM Orders where status=%s",("approved",))
+        users = cur.fetchall()
+        self.con.commit()
+        self.con.close()
+        d = []
+        # userid, campaignID, orderID, name, product, manager, orderdate, order_ID, orderss, orderAmount, refund,brand
+        for user in users:
+            temp = {}
+            temp['userid'] = user[0]
+            temp['campaignID'] = user[1]
+            temp['orderID'] = user[2]
+            temp['name'] = user[3]
+            temp['product'] = user[4]
+            temp['manager'] = user[5]
+            temp['orderdate'] = user[6]
+            temp['order_id'] = user[7]
+            temp['orderss'] = user[8]
+            temp['orderamount'] = user[9]
+            temp['refund'] = user[10]
+            temp['brand'] = user[11]
+            temp['status'] = user[12]
+            d.append(temp)
+        return d
+
+    def getRejectedOrders(self):
+        self.con = psycopg2.connect(host=self.host,user=self.user,password=self.password,database=self.database,port=self.port)
+        cur = self.con.cursor()
+        cur.execute("SELECT * FROM Orders where status=%s",("rejected",))
+        users = cur.fetchall()
+        self.con.commit()
+        self.con.close()
+        d = []
+        # userid, campaignID, orderID, name, product, manager, orderdate, order_ID, orderss, orderAmount, refund,brand
+        for user in users:
+            temp = {}
+            temp['userid'] = user[0]
+            temp['campaignID'] = user[1]
+            temp['orderID'] = user[2]
+            temp['name'] = user[3]
+            temp['product'] = user[4]
+            temp['manager'] = user[5]
+            temp['orderdate'] = user[6]
+            temp['order_id'] = user[7]
+            temp['orderss'] = user[8]
+            temp['orderamount'] = user[9]
+            temp['refund'] = user[10]
+            temp['brand'] = user[11]
+            temp['status'] = user[12]
+            d.append(temp)
+        return d
 
     def getBrandBySeller(self,sellerID):
         self.con = psycopg2.connect(host=self.host,user=self.user,password=self.password,database=self.database,port=self.port)
@@ -76,7 +144,25 @@ class database:
         users = cur.fetchall()
         self.con.commit()
         self.con.close()
-        return users
+        d = []
+        # userid, campaignID, orderID, name, product, manager, orderdate, order_ID, orderss, orderAmount, refund,brand
+        for user in users:
+            temp = {}
+            temp['userid'] = user[0]
+            temp['campaignID'] = user[1]
+            temp['orderID'] = user[2]
+            temp['name'] = user[3]
+            temp['product'] = user[4]
+            temp['manager'] = user[5]
+            temp['orderdate'] = user[6]
+            temp['order_id'] = user[7]
+            temp['orderss'] = user[8]
+            temp['orderamount'] = user[9]
+            temp['refund'] = user[10]
+            temp['brand'] = user[11]
+            temp['status'] = user[12]
+            d.append(temp)
+        return d
 
     def getUserByUserId(self,userID):
         self.con = psycopg2.connect(host=self.host,user=self.user,password=self.password,database=self.database,port=self.port)
@@ -188,9 +274,10 @@ class database:
     def getAllOrders(self):
         self.con = psycopg2.connect(host=self.host,user=self.user,password=self.password,database=self.database,port=self.port)
         cur = self.con.cursor()
-        cur.execute("SELECT * FROM Orders")
+        cur.execute("SELECT * FROM Orders where status=%s",("Pending",))
         users = cur.fetchall()
         d = []
+        # userid, campaignID, orderID, name, product, manager, orderdate, order_ID, orderss, orderAmount, refund,brand
         for user in users:
             temp = {}
             temp['userid'] = user[0]
@@ -205,6 +292,7 @@ class database:
             temp['orderamount'] = user[9]
             temp['refund'] = user[10]
             temp['brand'] = user[11]
+            temp['status'] = user[12]
             d.append(temp)
         self.con.commit()
         self.con.close()
@@ -555,10 +643,10 @@ class database:
         self.con.commit()
         self.con.close()
     
-    def insertIntoOrder(self,userid,campaignID,orderID, name, product, manager, orderdate, order_ID, orderss, orderAmount, refund, brand):
+    def insertIntoOrder(self,userid,campaignID,orderID, name, product, manager, orderdate, order_ID, orderss, orderAmount, refund, brand, status):
         self.con = psycopg2.connect(host=self.host,user=self.user,password=self.password,database=self.database,port=self.port)
         cur = self.con.cursor()
-        cur.execute("INSERT INTO Orders (userid,campaignID,orderID, name, product, manager, orderdate, order_ID, orderss, orderAmount, refund, brand) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",(userid,campaignID,orderID, name, product, manager, orderdate, order_ID, orderss, orderAmount, refund, brand))
+        cur.execute("INSERT INTO Orders (userid,campaignID,orderID, name, product, manager, orderdate, order_ID, orderss, orderAmount, refund, brand, status) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",(userid,campaignID,orderID, name, product, manager, orderdate, order_ID, orderss, orderAmount, refund, brand, status))
         self.con.commit()
         self.con.close()
 

@@ -67,8 +67,18 @@
                         <li class=" ">
                             <a href="/adminDashboard"><i class="fas fa-clipboard"></i> <span> Dashboard</span>
                         </li>
-                        <li class=" active">
+                        <!-- <li class=" active">
                             <a href="/submittedUserFroms"><i class="fas fa-clipboard"></i> <span>User submitted Forms</span>
+                        </li> -->
+                        <li class="submenu">
+                            <a href="#"><i class="fas fa-chalkboard-teacher"></i> <span>User submitted Forms</span> <span
+                                    class="menu-arrow"></span></a>
+                            <ul>
+                                <li><a href="/submittedUserFroms">Pending Aprroval</a></li>
+                                <li><a href="/approvedForms">Approved</a></li>
+                                <li><a href="/rejectedForms">Rejected</a></li>
+
+                            </ul>
                         </li>
 
                         <li class="submenu">
@@ -179,7 +189,7 @@
                                                 <table
                                                     class="table table-hover table-center mb-0 datatable dataTable no-footer"
                                                     id="DataTables_Table_0" role="grid"
-                                                    aria-describedby="DataTables_Table_0_info">
+                                                    aria-describedby="DataTables_Table_0_info" text-align="center">
                                                     <thead>
                                                         <tr role="row">
                                                             <th class="sorting_asc" tabindex="0"
@@ -257,12 +267,12 @@
                                                          
                                                             <td class="text-end">
                                                                 <div class="actions">
-                                                                    <a href="#"
+                                                                    <a href="/approveOrderAdmin/{{ form['userid'] }}/{{ form['campaignID'] }}"
                                                                         class="btn btn-sm bg-success-light me-2">
-                                                                        <i class="fas fa-pen"></i>
+                                                                        Approve
                                                                     </a>
-                                                                    <a href="#" class="btn btn-sm bg-danger-light">
-                                                                        <i class="fas fa-trash"></i>
+                                                                    <a href="/rejectOrderAdmin/{{ form['userid'] }}/{{ form['campaignID'] }}" class="btn btn-sm bg-danger-light">
+                                                                        Reject
                                                                     </a>
                                                                 </div>
                                                             </td>
