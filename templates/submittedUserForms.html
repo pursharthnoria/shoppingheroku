@@ -67,6 +67,9 @@
                         <li class=" ">
                             <a href="/adminDashboard"><i class="fas fa-clipboard"></i> <span> Dashboard</span>
                         </li>
+                        <li>
+                            <a href="/allUsers"><i class="fas fa-holly-berry"></i> <span>List of users</span></a>
+                        </li>
                         <!-- <li class=" active">
                             <a href="/submittedUserFroms"><i class="fas fa-clipboard"></i> <span>User submitted Forms</span>
                         </li> -->
@@ -206,7 +209,7 @@
                                                                 aria-controls="DataTables_Table_0" rowspan="1"
                                                                 colspan="1" aria-sort="ascending"
                                                                 aria-label="ID: activate to sort column descending"
-                                                                style="width: 50.5px;"> Campaign ID</th>
+                                                                style="width: 50.5px;"> Campaign Name</th>
                                                             <th class="sorting" tabindex="0"
                                                                 aria-controls="DataTables_Table_0" rowspan="1"
                                                                 colspan="1"
@@ -254,9 +257,9 @@
                                                     <tbody>
                                                         {% for form in forms %}
                                                         <tr role="row" class="odd">
-                                                            <td>{{ form['userid'] }}</td>
+                                                            <td  class="sorting_1">{{ form['userid'] }}</td>
                                                             <td>{{ form['username'] }}</td>
-                                                            <td class="sorting_1">{{ form['campaignID'] }}</td>
+                                                            <td>{{ form['campaignName'] }}</td>
                                                             <td>{{ form['brand'] }}</td>
                                                             <td>{{ form['product'] }}</td>
                                                             <td>{{ form['manager'] }}</td>

@@ -330,26 +330,28 @@ class database:
         cur = self.con.cursor()
         cur.execute("SELECT * FROM Orders where status=%s",("Pending",))
         users = cur.fetchall()
+        self.con.commit()
+        self.con.close()
         d = []
         # userid, campaignID, orderID, name, product, manager, orderdate, order_ID, orderss, orderAmount, refund,brand
         for user in users:
             temp = {}
             temp['userid'] = user[0]
             temp['campaignID'] = user[1]
+            temp['campaignName'] = self.getCampNameById(user[1])
             temp['orderID'] = user[2]
             temp['name'] = user[3]
-            temp['product'] = user[4]
-            temp['manager'] = user[5]
+            temp['product'] = self.getProdNameById(user[4])
+            temp['manager'] = self.getManagerName(user[5])
             temp['orderdate'] = user[6]
             temp['order_id'] = user[7]
             temp['orderss'] = user[8]
             temp['orderamount'] = user[9]
             temp['refund'] = user[10]
-            temp['brand'] = user[11]
+            print(user[11])
+            temp['brand'] = self.getBrandName(user[11])
             temp['status'] = user[12]
             d.append(temp)
-        self.con.commit()
-        self.con.close()
         return d
 
     def getAdditionalOrderInfo(self):
@@ -466,6 +468,15 @@ class database:
         self.con.commit()
         self.con.close()
         return users[0][2]
+
+    def getCampNameById(self,id):
+        self.con = psycopg2.connect(host=self.host,user=self.user,password=self.password,database=self.database,port=self.port)
+        cur = self.con.cursor()
+        cur.execute("SELECT * FROM Campaign where campaignID=%s",(id,))
+        users = cur.fetchall()
+        self.con.commit()
+        self.con.close()
+        return users[0][1]
 
     def getAllAdmins(self):
         self.con = psycopg2.connect(host=self.host,user=self.user,password=self.password,database=self.database,port=self.port)
@@ -616,6 +627,7 @@ class database:
         cur = self.con.cursor()
         cur.execute("SELECT * FROM Brand where brandID=%s",(bndID,))
         users = cur.fetchall()
+        print(users)
         self.con.commit()
         self.con.close()
         return users[0][2]
@@ -628,6 +640,39 @@ class database:
         self.con.commit()
         self.con.close()
         return users
+    
+    def getAllUsers(self):
+        self.con = psycopg2.connect(host=self.host,user=self.user,password=self.password,database=self.database,port=self.port)
+        cur = self.con.cursor()
+        cur.execute("SELECT * FROM Buyer")
+        users = cur.fetchall()
+        self.con.commit()
+        self.con.close()
+        d = []
+        # userid, firstName, lastName, defaultProfile, email, telegramID, whatsappNumber, alternateNumber, paytmNumber, gpayNumber,
+        #  UPI, bankname, accountNumber, ifsc, password,emailVerified,profilepic,whatsappVerified
+        for user in users:
+            temp = {}
+            temp['userid'] = user[0]
+            temp['firstName'] = user[1]
+            temp['lastName'] = user[2]
+            temp['defaultProfile'] = user[3]
+            temp['email'] = user[4]
+            temp['telegramID'] = user[5]
+            temp['whatsappNumber'] = user[6]
+            temp['alternateNumber'] = user[7]
+            temp['paytmNumber'] = user[8]
+            temp['gpayNumber'] = user[9]
+            temp['UPI'] = user[10]
+            temp['bankname'] = user[11]
+            temp['accountNumber'] = user[12]
+            temp['ifsc'] = user[13]
+            temp['password'] = user[14]
+            temp['emailVerified'] = user[15]
+            temp['profilepic'] = user[16]
+            temp['whatsappVerified'] = user[17]
+            d.append(temp)
+        return d
     
     def getAllocateProducts(self,campID):
         self.con = psycopg2.connect(host=self.host,user=self.user,password=self.password,database=self.database,port=self.port)

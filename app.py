@@ -677,6 +677,12 @@ def rejectOrderAdmin(userid,campaignID):
         forms = db.rejectOrderAdmin(userid,campaignID)
         return redirect("/submittedUserFroms")
 
+@app.route("/allUsers")
+def allusers():
+    if session.get("name"):
+        users = db.getAllUsers()
+        return render_template("allUsers.html",users=users)
+
 if __name__ == '__main__':
   
     # run() method of Flask class runs the application 
