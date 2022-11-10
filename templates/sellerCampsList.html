@@ -106,25 +106,29 @@
                     <div class="col-12 col-md-6 col-lg-12 my-3 d-flex" style="box-shadow: 0px 2px 2px 5px #00000038;">
                         <div class="card flex-fill">
                             <div class="card-header" style="background-color: #18aefa !important">
-                                <h5 class="card-title mb-0 text-center" style="color: white;">{{ camp['brand'] + " " + camp['product'] }}</h5>
+                                <h5 class="card-title mb-0 text-center" style="color: white;">{{ camp['name'] }}</h5>
                             </div>
                             <div class="card-body">
                                 <div class="row">
-                                    <div class="col-xl-4 col-md-4  text-center my-3">
+                                    <div class="col-xl-2 col-md-2 text-center   my-4">
+                                        Brand
+                                        <h6>{{ camp['brandname'] }}</h6>
+                                    </div>
+                                    
+                                    <div class="col-xl-3 col-md-3  text-center my-4">
                                         Start Date
                                         <h6>{{ camp['start_date'] }}</h6>
                                     </div>
 
 
-                                    <div class="col-xl-4 col-md-4 text-center   my-3">
+                                    <div class="col-xl-3 col-md-3 text-center   my-4">
                                         End Date
                                         <h6>{{ camp['end_date'] }}</h6>
                                     </div>
-
-
-                                    <div class="col-xl-4 col-md-4 text-center   my-3">
-                                        Quantity
-                                        <h6>{{ camp['quantity'] }}</h6>
+                                    
+                                    <div class="col-xl-3 col-md-3 text-center   my-4">
+                                        Campaign ID
+                                        <h6>{{ camp['campaignID'] }}</h6>
                                     </div>
                                 </div>
                             </div>
