@@ -578,6 +578,7 @@ def submitOrder():
         manID = request.form.get("manager")
         affiliate_name = request.form.get("affiliate_name")
         brand = request.form.get("brand")
+        print("***************"+brand+"******************")
         productID = request.form.get("product")
         # for i in range(len(managers)):
         #     if "(" in managers[i]:
@@ -596,7 +597,7 @@ def submitOrder():
         uid = session.get("userid")
         campid = request.form.get("campID")
         try:
-            db.insertIntoOrder(uid,campid,ordID,affiliate_name,productID,manID,order_date,order_id,order_screenshot,order_amount,refund_amount,brandID,"Pending")
+            db.insertIntoOrder(uid,campid,ordID,affiliate_name,productID,manID,order_date,order_id,order_screenshot,order_amount,refund_amount,brand,"Pending")
         except Exception as e:
             print(e)
         return redirect("/buyerDashboard")

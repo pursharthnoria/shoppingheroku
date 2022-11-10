@@ -62,16 +62,17 @@ class database:
             temp = {}
             temp['userid'] = user[0]
             temp['campaignID'] = user[1]
+            temp['campaignName'] = self.getCampNameById(user[1])
             temp['orderID'] = user[2]
             temp['name'] = user[3]
-            temp['product'] = user[4]
-            temp['manager'] = user[5]
+            temp['product'] = self.getProdNameById(user[4])
+            temp['manager'] = self.getManagerName(user[5])
             temp['orderdate'] = user[6]
             temp['order_id'] = user[7]
             temp['orderss'] = user[8]
             temp['orderamount'] = user[9]
             temp['refund'] = user[10]
-            temp['brand'] = user[11]
+            temp['brand'] = self.getBrandName(user[11])
             temp['status'] = user[12]
             d.append(temp)
         return d
@@ -89,16 +90,17 @@ class database:
             temp = {}
             temp['userid'] = user[0]
             temp['campaignID'] = user[1]
+            temp['campaignName'] = self.getCampNameById(user[1])
             temp['orderID'] = user[2]
             temp['name'] = user[3]
-            temp['product'] = user[4]
-            temp['manager'] = user[5]
+            temp['product'] = self.getProdNameById(user[4])
+            temp['manager'] = self.getManagerName(user[5])
             temp['orderdate'] = user[6]
             temp['order_id'] = user[7]
             temp['orderss'] = user[8]
             temp['orderamount'] = user[9]
             temp['refund'] = user[10]
-            temp['brand'] = user[11]
+            temp['brand'] = self.getBrandName(user[11])
             temp['status'] = user[12]
             d.append(temp)
         return d
@@ -116,16 +118,17 @@ class database:
             temp = {}
             temp['userid'] = user[0]
             temp['campaignID'] = user[1]
+            temp['campaignName'] = self.getCampNameById(user[1])
             temp['orderID'] = user[2]
             temp['name'] = user[3]
-            temp['product'] = user[4]
-            temp['manager'] = user[5]
+            temp['product'] = self.getProdNameById(user[4])
+            temp['manager'] = self.getManagerName(user[5])
             temp['orderdate'] = user[6]
             temp['order_id'] = user[7]
             temp['orderss'] = user[8]
             temp['orderamount'] = user[9]
             temp['refund'] = user[10]
-            temp['brand'] = user[11]
+            temp['brand'] = self.getBrandName(user[11])
             temp['status'] = user[12]
             d.append(temp)
         return d
@@ -143,16 +146,17 @@ class database:
             temp = {}
             temp['userid'] = user[0]
             temp['campaignID'] = user[1]
+            temp['campaignName'] = self.getCampNameById(user[1])
             temp['orderID'] = user[2]
             temp['name'] = user[3]
-            temp['product'] = user[4]
-            temp['manager'] = user[5]
+            temp['product'] = self.getProdNameById(user[4])
+            temp['manager'] = self.getManagerName(user[5])
             temp['orderdate'] = user[6]
             temp['order_id'] = user[7]
             temp['orderss'] = user[8]
             temp['orderamount'] = user[9]
             temp['refund'] = user[10]
-            temp['brand'] = user[11]
+            temp['brand'] = self.getBrandName(user[11])
             temp['status'] = user[12]
             d.append(temp)
         return d
@@ -444,7 +448,7 @@ class database:
             d.append(temp)
         self.con.commit()
         self.con.close()
-        return d
+        return d[0]
 
     def getProdsByCampId(self,campId):
         self.con = psycopg2.connect(host=self.host,user=self.user,password=self.password,database=self.database,port=self.port)
