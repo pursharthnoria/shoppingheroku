@@ -251,11 +251,22 @@
                                                                 aria-controls="DataTables_Table_0" rowspan="1"
                                                                 colspan="1"
                                                                 aria-label="Action: activate to sort column ascending"
-                                                                style="width: 74.7031px;">Action</th>
+                                                                style="width: 74.7031px;">Approve</th>
+                                                            <th class="text-end sorting" tabindex="0"
+                                                                aria-controls="DataTables_Table_0" rowspan="1"
+                                                                colspan="1"
+                                                                aria-label="Action: activate to sort column ascending"
+                                                                style="width: 74.7031px;">Reject</th>
+                                                            <th class="text-end sorting" tabindex="0"
+                                                                aria-controls="DataTables_Table_0" rowspan="1"
+                                                                colspan="1"
+                                                                aria-label="Action: activate to sort column ascending"
+                                                                style="width: 74.7031px;">Rejection reason</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
                                                         {% for form in forms %}
+                                                        <form action="/rejectOrderAdmin/{{ form['userid'] }}/{{ form['campaignID'] }}" method="post">
                                                         <tr role="row" class="odd">
                                                             <td  class="sorting_1">{{ form['userid'] }}</td>
                                                             <td>{{ form['username'] }}</td>
@@ -274,12 +285,16 @@
                                                                         class="btn btn-sm bg-success-light me-2">
                                                                         Approve
                                                                     </a>
-                                                                    <a href="/rejectOrderAdmin/{{ form['userid'] }}/{{ form['campaignID'] }}" class="btn btn-sm bg-danger-light">
-                                                                        Reject
-                                                                    </a>
                                                                 </div>
                                                             </td>
+                                                            <td class="text-end">
+                                                                <div class="actions">
+                                                                    <input type="submit" value="Reject">
+                                                                </div>
+                                                            </td>
+                                                            <td><input type="text" name="reason"></td>
                                                         </tr>
+                                                    </form>
                                                         {% endfor %}
                                                     </tbody>
                                                 </table>

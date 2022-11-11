@@ -196,6 +196,11 @@
                                                                 colspan="1"
                                                                 aria-label="Action: activate to sort column ascending"
                                                                 style="width: 74.7031px;">Status</th>
+                                                            <th class="text-end sorting" tabindex="0"
+                                                                aria-controls="DataTables_Table_0" rowspan="1"
+                                                                colspan="1"
+                                                                aria-label="Action: activate to sort column ascending"
+                                                                style="width: 74.7031px;">Reason</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -211,10 +216,8 @@
                                                             <td>{{ form['orderID'] }}</td>
                                                             <td>{{ form['orderamount'] }}</td>
                                                             <td>{{ form['refund'] }}</td>
-                                                         
-                                                            <td class="text-end">
-                                                                {{ form['status'] }}
-                                                            </td>
+                                                            <td>{{ form['status'] }}</td>
+                                                            <td>{{ form['reason'] }}</td>
                                                         </tr>
                                                         {% endfor %}
                                                     </tbody>

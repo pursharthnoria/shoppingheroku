@@ -31,6 +31,7 @@ class database:
         cur.execute("CREATE TABLE IF NOT EXISTS allocateManagersToCamp (campaignID text, managerID text, slots text)")
         # cur.execute("CREATE TABLE IF NOT EXISTS formDetails (campaignID text, ss1 text, ss2 text, link text, returnExp text, orderDel text)")
         cur.execute("CREATE TABLE IF NOT EXISTS Orders (userid text, campaignID text, orderID text, name text, product text, manager text, orderdate DATE, order_ID text, orderss BYTEA, orderAmount text, refund text,brand text, status text)")
+        cur.execute("CREATE TABLE IF NOT EXISTS Reject (userid text, campaignID text, reason text)")
         # cur.execute("CREATE TABLE IF NOT EXISTS additionalOrderInfo (userid text, campaignID text, orderID text, ss1 BYTEA, ss2 BYTEA, link TEXT, returnExp BYTEA, orderDel BYTEA)")
         self.con.commit()
         self.con.close()
@@ -133,6 +134,15 @@ class database:
             d.append(temp)
         return d
     
+    def getRejectReason(self,userid,campid):
+        self.con = psycopg2.connect(host=self.host,user=self.user,password=self.password,database=self.database,port=self.port)
+        cur = self.con.cursor()
+        cur.execute("SELECT * FROM Reject where userid=%s and campaignID=%s",(userid,campid))
+        users = cur.fetchall()
+        self.con.commit()
+        self.con.close()
+        return users[0][2]
+
     def getRejectedUserOrders(self,userid):
         self.con = psycopg2.connect(host=self.host,user=self.user,password=self.password,database=self.database,port=self.port)
         cur = self.con.cursor()
@@ -739,6 +749,12 @@ class database:
         self.con.commit()
         self.con.close()
 
+    def insertIntoReject(self,userid, campaignID, reason):
+        self.con = psycopg2.connect(host=self.host,user=self.user,password=self.password,database=self.database,port=self.port)
+        cur = self.con.cursor()
+        cur.execute("INSERT INTO Reject (userid, campaignID, reason) VALUES (%s,%s,%s)",(userid, campaignID, reason))
+        self.con.commit()
+        self.con.close()
 
     def insertIntoBuyer(self,userid, firstName, lastName, defaultProfile, email, password, whatsappNumber, telegramID = "None", alternateNumber = "None", paytmNumber="None", gpayNumber="None", UPI="None", bankname="None", accountNumber="None", ifsc="None",emailVerified = "no",profilepic=None,whatsappVerified="no"):
         self.con = psycopg2.connect(host=self.host,user=self.user,password=self.password,database=self.database,port=self.port)

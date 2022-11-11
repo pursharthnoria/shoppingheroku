@@ -632,6 +632,7 @@ def rejectedUserForms():
         forms = db.getRejectedUserOrders(session.get("userid"))
         for i in range(len(forms)):
             forms[i]['username'] = db.getUserByUserId(forms[i]['userid'])
+            forms[i]['reason'] = db.getRejectReason(forms[i]['userid'],forms[i]['campaignID'])
         return render_template("rejectedUserForms.html",forms=forms)
 
 @app.route("/approvedUserForms")
@@ -664,6 +665,7 @@ def rejectedForms():
         forms = db.getRejectedOrders()
         for i in range(len(forms)):
             forms[i]['username'] = db.getUserByUserId(forms[i]['userid'])
+            forms[i]['reason'] = db.getRejectReason(forms[i]['userid'],forms[i]['campaignID'])
         return render_template("rejectedForms.html",forms=forms)
 
 @app.route("/approveOrderAdmin/<userid>/<campaignID>")
@@ -672,10 +674,12 @@ def approveOrderAdmin(userid,campaignID):
         forms = db.approveOrderAdmin(userid,campaignID)
         return redirect("/submittedUserFroms")
 
-@app.route("/rejectOrderAdmin/<userid>/<campaignID>")
+@app.route("/rejectOrderAdmin/<userid>/<campaignID>",methods=["POST"])
 def rejectOrderAdmin(userid,campaignID):
     if session.get("name"):
+        reason = request.form.get("reason")
         forms = db.rejectOrderAdmin(userid,campaignID)
+        db.insertIntoReject(userid,campaignID,reason)
         return redirect("/submittedUserFroms")
 
 @app.route("/allUsers")
